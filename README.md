@@ -1,6 +1,6 @@
 # Asgard
 <div align="center">
-  <img alt="image" src="docs/img/asgard.png" />
+  <img height="350" alt="image" src="docs/img/asgard.png" />
 </div>
 
 Asgard est une suite d'outils et de bibliothèques pour le développement Spring Boot, inspirée par la mythologie nordique.
