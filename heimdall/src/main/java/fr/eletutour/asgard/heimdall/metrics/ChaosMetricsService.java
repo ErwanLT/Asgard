@@ -15,11 +15,13 @@ public class ChaosMetricsService {
     private final MeterRegistry meterRegistry;
     private final ConcurrentHashMap<String, Counter> ruleCounters;
     private final ConcurrentHashMap<String, Timer> ruleTimers;
+    private final ConcurrentHashMap<String, Counter> failureCounters;
 
     public ChaosMetricsService(MeterRegistry meterRegistry) {
         this.meterRegistry = meterRegistry;
         this.ruleCounters = new ConcurrentHashMap<>();
         this.ruleTimers = new ConcurrentHashMap<>();
+        this.failureCounters = new ConcurrentHashMap<>();
     }
 
     public void recordRuleExecution(ChaosRule rule, long executionTimeMs) {
@@ -44,12 +46,15 @@ public class ChaosMetricsService {
 
     public void recordRuleFailure(ChaosRule rule, Throwable error) {
         String ruleName = rule.getName();
+        String errorType = error.getClass().getSimpleName();
+        String key = ruleName + ":" + errorType;
         
-        Counter failureCounter = Counter.builder("chaos.rule.failures")
-            .tag("rule", ruleName)
-            .tag("error", error.getClass().getSimpleName())
-            .description("Nombre d'échecs de la règle de chaos")
-            .register(meterRegistry);
+        Counter failureCounter = failureCounters.computeIfAbsent(key,
+            k -> Counter.builder("chaos.rule.failures")
+                .tag("rule", ruleName)
+                .tag("error", errorType)
+                .description("Nombre d'échecs de la règle de chaos")
+                .register(meterRegistry));
         failureCounter.increment();
     }
 } 

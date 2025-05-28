@@ -1,6 +1,7 @@
 package fr.eletutour.asgard.heimdall.configuration;
 
 import fr.eletutour.asgard.heimdall.aspect.ChaosMetricsAspect;
+import fr.eletutour.asgard.heimdall.logging.ChaosLoggingService;
 import fr.eletutour.asgard.heimdall.metrics.ChaosMetricsService;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -17,7 +18,13 @@ public class HeimdallAutoConfiguration {
     }
 
     @Bean
-    public ChaosMetricsAspect chaosMetricsAspect(ChaosMetricsService metricsService) {
-        return new ChaosMetricsAspect(metricsService);
+    public ChaosLoggingService chaosLoggingService() {
+        return new ChaosLoggingService();
+    }
+
+    @Bean
+    public ChaosMetricsAspect chaosMetricsAspect(ChaosMetricsService metricsService, 
+                                                ChaosLoggingService loggingService) {
+        return new ChaosMetricsAspect(metricsService, loggingService);
     }
 } 
