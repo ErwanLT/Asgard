@@ -1,5 +1,7 @@
 # Heimdall - Module de Logging pour Spring Boot
-![heimdall.png](../docs/img/heimdall.png)
+<div align="center">
+  <img width="440" alt="image" src="../docs/img/heimdall.png" />
+</div>
 
 ## Description
 Heimdall est un module de logging avancé pour les applications Spring Boot qui permet de tracer automatiquement l'exécution des méthodes annotées avec les stéréotypes Spring courants.
