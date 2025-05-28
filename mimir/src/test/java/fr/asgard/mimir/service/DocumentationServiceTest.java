@@ -2,38 +2,199 @@ package fr.asgard.mimir.service;
 
 import fr.asgard.mimir.annotation.ApiDescription;
 import fr.asgard.mimir.config.MimirProperties;
+import fr.asgard.mimir.model.DocumentationEntry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class DocumentationServiceTest {
 
-    @TempDir
-    Path tempDir;
+    @Mock
+    private MimirProperties mimirProperties;
 
-    private DocumentationService documentationService;
+    @Mock
     private UmlDiagramService umlDiagramService;
-    private MimirProperties properties;
+
+    @Mock
+    private SearchService searchService;
+
+    @InjectMocks
+    private DocumentationService documentationService;
+
+    private Path tempDir;
+    private DocumentationEntry entry1;
+    private DocumentationEntry entry2;
 
     @BeforeEach
-    void setUp() {
-        properties = new MimirProperties();
-        properties.getDocumentation().setOutputDir(tempDir.toString());
-        umlDiagramService = new UmlDiagramService(properties);
-        documentationService = new DocumentationService(properties, umlDiagramService);
+    void setUp() throws IOException {
+        tempDir = Files.createTempDirectory("mimir-test");
+
+        entry1 = DocumentationEntry.builder()
+                .id("1")
+                .title("Test Documentation 1")
+                .content("Contenu de test 1")
+                .tags(Arrays.asList("test", "java"))
+                .category("API")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+
+        entry2 = DocumentationEntry.builder()
+                .id("2")
+                .title("Test Documentation 2")
+                .content("Contenu de test 2")
+                .tags(Arrays.asList("test", "spring"))
+                .category("Guide")
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }
+
+    @Test
+    void shouldGenerateDocumentation() throws IOException {
+        // Given
+        when(mimirProperties.getOutputPath()).thenReturn(tempDir);
+        @ApiDescription(
+            value = "Test class description",
+            tags = {"test", "documentation"},
+            category = "Test"
+        )
+        class TestClass {
+            @ApiDescription(
+                value = "Test method description",
+                returnType = "void",
+                throws_ = {
+                    @ApiDescription.Throws(
+                        exception = RuntimeException.class,
+                        description = "If something goes wrong"
+                    )
+                }
+            )
+            public void testMethod() {}
+        }
+
+        // When
+        documentationService.generateDocumentation(TestClass.class);
+
+        // Then
+        Path expectedFile = tempDir.resolve("testclass.md");
+        assertThat(expectedFile).exists();
+        String content = Files.readString(expectedFile);
+        assertThat(content)
+            .contains("# TestClass")
+            .contains("Test class description")
+            .contains("Tags: `test`, `documentation`")
+            .contains("Category: Test")
+            .contains("## Methods")
+            .contains("### testMethod")
+            .contains("Test method description")
+            .contains("#### Returns")
+            .contains("void")
+            .contains("#### Throws")
+            .contains("`RuntimeException` : If something goes wrong");
+
+        verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
+    }
+
+    @Test
+    void shouldSearchDocumentation() {
+        // Given
+        String query = "test";
+        Page<DocumentationEntry> expectedPage = new PageImpl<>(Arrays.asList(entry1, entry2));
+        when(searchService.search(eq(query), isNull())).thenReturn(expectedPage);
+
+        // When
+        List<DocumentationEntry> result = documentationService.searchDocumentation(query);
+
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result).containsExactly(entry1, entry2);
+        verify(searchService).search(eq(query), isNull());
+    }
+
+    @Test
+    void shouldSearchByTags() {
+        // Given
+        List<String> tags = Arrays.asList("test", "java");
+        when(searchService.searchByTags(tags)).thenReturn(Arrays.asList(entry1));
+
+        // When
+        List<DocumentationEntry> result = documentationService.searchByTags(tags);
+
+        // Then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(entry1);
+        verify(searchService).searchByTags(tags);
+    }
+
+    @Test
+    void shouldSearchByCategory() {
+        // Given
+        String category = "API";
+        when(searchService.searchByCategory(category)).thenReturn(Arrays.asList(entry1));
+
+        // When
+        List<DocumentationEntry> result = documentationService.searchByCategory(category);
+
+        // Then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0)).isEqualTo(entry1);
+        verify(searchService).searchByCategory(category);
+    }
+
+    @Test
+    void shouldGetAllTags() {
+        // Given
+        List<String> expectedTags = Arrays.asList("test", "java", "spring");
+        when(searchService.getAllTags()).thenReturn(expectedTags);
+
+        // When
+        List<String> tags = documentationService.getAllTags();
+
+        // Then
+        assertThat(tags).isEqualTo(expectedTags);
+        verify(searchService).getAllTags();
+    }
+
+    @Test
+    void shouldGetAllCategories() {
+        // Given
+        List<String> expectedCategories = Arrays.asList("API", "Guide");
+        when(searchService.getAllCategories()).thenReturn(expectedCategories);
+
+        // When
+        List<String> categories = documentationService.getAllCategories();
+
+        // Then
+        assertThat(categories).isEqualTo(expectedCategories);
+        verify(searchService).getAllCategories();
     }
 
     @Test
     void shouldGenerateDocumentationForClass() throws IOException, URISyntaxException {
         // Given
+        when(mimirProperties.getOutputPath()).thenReturn(tempDir);
         @ApiDescription(
             value = "Test API description",
             tags = {"test", "api"},
@@ -45,7 +206,7 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateApiDocumentation(TestClass.class);
+        documentationService.generateDocumentation(TestClass.class);
 
         // Then
         Path docFile = tempDir.resolve("testclass.md");
@@ -73,11 +234,14 @@ class DocumentationServiceTest {
         assertThat(normalizedGenerated)
             .as("Le contenu généré devrait correspondre au fichier de référence")
             .isEqualTo(normalizedReference);
+
+        verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
     }
 
     @Test
     void shouldGenerateDocumentationForWellDocumentedClass() throws IOException, URISyntaxException {
         // Given
+        when(mimirProperties.getOutputPath()).thenReturn(tempDir);
         @ApiDescription(
             value = "Contrôleur REST pour la gestion des utilisateurs. Ce contrôleur permet de créer, récupérer, mettre à jour et supprimer des utilisateurs.",
             tags = {"user", "rest", "api", "crud"},
@@ -153,7 +317,7 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateApiDocumentation(UserController.class);
+        documentationService.generateDocumentation(UserController.class);
 
         // Then
         Path docFile = tempDir.resolve("usercontroller.md");
@@ -191,7 +355,7 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateApiDocumentation(TestClass.class);
+        documentationService.generateDocumentation(TestClass.class);
 
         // Then
         Path docFile = tempDir.resolve("testclass.md");
@@ -207,7 +371,7 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateApiDocumentation(TestClass.class);
+        documentationService.generateDocumentation(TestClass.class);
 
         // Then
         Path docFile = tempDir.resolve("testclass.md");

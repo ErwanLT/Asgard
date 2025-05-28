@@ -2,17 +2,17 @@ package fr.asgard.mimir.service;
 
 import fr.asgard.mimir.annotation.ApiDescription;
 import fr.asgard.mimir.config.MimirProperties;
+import fr.asgard.mimir.model.DocumentationEntry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -21,22 +21,52 @@ import java.util.stream.Collectors;
 public class DocumentationService {
     private final MimirProperties properties;
     private final UmlDiagramService umlDiagramService;
+    private final SearchService searchService;
 
-    public void generateApiDocumentation(Class<?> clazz) {
-        ApiDescription description = clazz.getAnnotation(ApiDescription.class);
-        if (description == null) {
-            log.warn("No @ApiDescription found for class: {}", clazz.getName());
-            return;
+    public void generateDocumentation(Class<?> clazz) {
+        log.info("Génération de la documentation pour la classe: {}", clazz.getName());
+        try {
+            ApiDescription description = clazz.getAnnotation(ApiDescription.class);
+            if (description == null) {
+                log.warn("No @ApiDescription found for class: {}", clazz.getName());
+                return;
+            }
+
+            String markdownContent = generateMarkdownContent(clazz);
+            Path outputPath = properties.getOutputPath().resolve(clazz.getSimpleName().toLowerCase() + ".md");
+            Files.writeString(outputPath, markdownContent);
+            log.info("Documentation générée avec succès dans: {}", outputPath);
+
+            // Génération du diagramme UML
+            umlDiagramService.generateClassDiagram(clazz);
+        } catch (IOException e) {
+            log.error("Erreur lors de la génération de la documentation", e);
+            throw new RuntimeException("Erreur lors de la génération de la documentation", e);
         }
-
-        String content = generateMarkdownContent(clazz, description);
-        saveDocumentation(clazz, content);
-        
-        // Générer le diagramme UML
-        umlDiagramService.generateClassDiagram(clazz);
     }
 
-    private String generateMarkdownContent(Class<?> clazz, ApiDescription description) {
+    public List<DocumentationEntry> searchDocumentation(String query) {
+        return searchService.search(query, null).getContent();
+    }
+
+    public List<DocumentationEntry> searchByTags(List<String> tags) {
+        return searchService.searchByTags(tags);
+    }
+
+    public List<DocumentationEntry> searchByCategory(String category) {
+        return searchService.searchByCategory(category);
+    }
+
+    public List<String> getAllTags() {
+        return searchService.getAllTags();
+    }
+
+    public List<String> getAllCategories() {
+        return searchService.getAllCategories();
+    }
+
+    private String generateMarkdownContent(Class<?> clazz) {
+        ApiDescription description = clazz.getAnnotation(ApiDescription.class);
         StringBuilder content = new StringBuilder();
         
         // En-tête
@@ -108,20 +138,5 @@ public class DocumentationService {
               });
 
         return content.toString();
-    }
-
-    private void saveDocumentation(Class<?> clazz, String content) {
-        try {
-            Path outputDir = Paths.get(properties.getDocumentation().getOutputDir());
-            Files.createDirectories(outputDir);
-
-            String fileName = clazz.getSimpleName().toLowerCase() + ".md";
-            Path filePath = outputDir.resolve(fileName);
-            
-            Files.writeString(filePath, content);
-            log.info("Documentation generated for {} at {}", clazz.getName(), filePath);
-        } catch (IOException e) {
-            log.error("Error generating documentation for {}: {}", clazz.getName(), e.getMessage(), e);
-        }
     }
 } 

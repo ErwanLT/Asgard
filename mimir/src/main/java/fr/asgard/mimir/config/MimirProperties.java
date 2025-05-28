@@ -3,6 +3,7 @@ package fr.asgard.mimir.config;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.nio.file.Path;
 import java.util.List;
 
 @Data
@@ -11,6 +12,7 @@ public class MimirProperties {
     private Documentation documentation = new Documentation();
     private KnowledgeBase knowledgeBase = new KnowledgeBase();
     private Analysis analysis = new Analysis();
+    private Path outputPath;
 
     @Data
     public static class Documentation {

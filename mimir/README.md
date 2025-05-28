@@ -16,6 +16,16 @@ Module de documentation automatique pour Spring Boot, inspiré par Mimir, le die
   - Tags
   - Catégorie
   - Documentation des méthodes
+  - Documentation des paramètres
+  - Documentation des types de retour
+  - Documentation des exceptions
+- Génération automatique de diagrammes UML pour les classes
+- Stockage de la documentation dans Elasticsearch
+- Configuration via application.yml
+- Intégration avec Spring Boot
+- Validation des annotations au démarrage
+- Formatage automatique du Markdown
+- Logging des opérations
 
 ## Installation
 
@@ -72,6 +82,11 @@ mimir:
 - [x] Documentation des types de retour
 - [x] Support des diagrammes UML
 - [x] Documentation des exceptions
+- [x] Stockage dans Elasticsearch
+- [ ] Interface REST pour accéder à la documentation
+- [ ] Recherche en texte intégral dans la documentation
+- [x] Filtrage par tags et catégories
+- [ ] Export en différents formats (PDF, HTML)
 
 ### Knowledge Base (Planifié)
 - [ ] Base de connaissances centralisée
@@ -79,6 +94,9 @@ mimir:
 - [ ] Guides de démarrage
 - [ ] FAQ
 - [ ] Solutions aux problèmes courants
+- [ ] Documentation interactive
+- [ ] Exemples de code
+- [ ] Tutoriels vidéo
 
 ### Analyse de Code (Planifié)
 - [ ] Détection de patterns
@@ -86,18 +104,29 @@ mimir:
 - [ ] Suggestions d'amélioration
 - [ ] Métriques de qualité de code
 - [ ] Couverture de tests
+- [ ] Analyse de complexité cyclomatique
+- [ ] Détection de code mort
+- [ ] Analyse de dépendances
 
 ### Intégration (Planifié)
 - [ ] Intégration avec Jira
 - [ ] Intégration avec Confluence
 - [ ] Intégration avec GitHub/GitLab
 - [ ] Notifications Slack
+- [ ] Intégration avec Swagger/OpenAPI
+- [ ] Intégration avec Postman
+- [ ] Intégration avec VS Code
+- [ ] Intégration avec IntelliJ IDEA
 
 ### Recherche et Navigation (Planifié)
 - [ ] Recherche en texte intégral
-- [ ] Navigation par tags et catégories
+- [x] Navigation par tags et catégories
 - [ ] Suggestions de documentation pertinente
 - [ ] Historique des modifications
+- [ ] Recherche sémantique
+- [ ] Auto-complétion
+- [ ] Navigation par graphe de dépendances
+- [ ] Filtres avancés
 
 ## Tests
 

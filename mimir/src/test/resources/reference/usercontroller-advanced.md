@@ -79,4 +79,4 @@ Confirmation de la suppression
 #### Throws
 
 - `UserNotFoundException` : L'utilisateur n'a pas été trouvé
-- `UserDeletionException` : Impossible de supprimer l'utilisateur 
+- `UserDeletionException` : Impossible de supprimer l'utilisateur
