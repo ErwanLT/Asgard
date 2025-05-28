@@ -10,8 +10,6 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>asgard-core</module>
-        <module>loki-chaos</module>
         <module>heimdall</module>
     </modules>
 

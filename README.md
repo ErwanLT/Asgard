@@ -1,56 +1,88 @@
 # Asgard
 
-## Description
-Asgard est un framework de chaos engineering pour Java, inspiré par la mythologie nordique. Il permet d'injecter des perturbations contrôlées dans les systèmes pour tester leur résilience.
+Asgard est une suite d'outils et de bibliothèques pour faciliter le développement d'applications Spring Boot.
 
-## Architecture
-Le projet est composé de trois modules principaux :
+## Modules
 
-### [Asgard Core](asgard-core/README.md)
-Le cœur du framework qui définit les interfaces et les classes de base pour la gestion des règles de chaos.
+### Heimdall
+Module de logging avancé pour Spring Boot qui permet de tracer automatiquement l'exécution des méthodes annotées avec les stéréotypes Spring courants.
 
-### [Heimdall](heimdall/README.md)
-Le gardien d'Asgard, responsable de la surveillance et de la métrologie des règles de chaos. Il fournit des fonctionnalités de monitoring, de logging et de métriques.
-
-### [Loki Chaos](loki-chaos/README.md)
-Une implémentation spécifique des règles de chaos pour Loki, le système de logging de Grafana.
+[Documentation Heimdall](heimdall/README.md)
 
 ## Installation
-```xml
-<dependency>
-    <groupId>fr.eletutour.asgard</groupId>
-    <artifactId>asgard-bom</artifactId>
-    <version>${asgard.version}</version>
-    <type>pom</type>
-    <scope>import</scope>
-</dependency>
-```
 
-## Prérequis
-- Java 17+
-- Maven 3.6+
-- Spring Boot 3.x
+### Prérequis
+- Java 21 ou supérieur
+- Maven 3.8 ou supérieur
 
-## Build
+### Installation des dépendances
 ```bash
 mvn clean install
 ```
 
-## Tests
+## Structure du projet
+
+```
+asgard/
+├── heimdall/           # Module de logging
+│   ├── src/
+│   │   ├── main/
+│   │   └── test/
+│   └── pom.xml
+├── docs/              # Documentation
+│   └── img/          # Images pour la documentation
+├── pom.xml           # POM parent
+└── README.md         # Ce fichier
+```
+
+## Développement
+
+### Configuration de l'environnement
+1. Cloner le repository
+```bash
+git clone https://github.com/votre-username/asgard.git
+cd asgard
+```
+
+2. Installer les dépendances
+```bash
+mvn clean install
+```
+
+### Tests
+Pour exécuter tous les tests :
 ```bash
 mvn test
 ```
 
+Pour exécuter les tests d'un module spécifique :
+```bash
+cd heimdall
+mvn test
+```
+
 ## Contribution
-Les contributions sont les bienvenues ! N'hésitez pas à :
+
+Les contributions sont les bienvenues ! Voici comment contribuer :
+
 1. Fork le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
+2. Créer une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
+3. Commiter vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. Pousser vers la branche (`git push origin feature/AmazingFeature`)
 5. Ouvrir une Pull Request
 
+### Standards de code
+- Suivre les conventions de nommage Java
+- Ajouter des tests unitaires pour les nouvelles fonctionnalités
+- Mettre à jour la documentation
+- Maintenir la couverture de code
+
 ## Licence
+
 Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
 
-## Auteur
-- Ewan Le Tutour
+## Contact
+
+Ewan Le Tutour - [@ErwanLeTutour](https://x.com/ErwanLeTutour)
+
+Lien du projet : [https://github.com/ErwanLT/Asgard](https://github.com/ErwanLT/Asgard)
