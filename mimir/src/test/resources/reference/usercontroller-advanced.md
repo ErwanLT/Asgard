@@ -6,6 +6,10 @@ Tags: `user`, `rest`, `api`, `crud`
 
 Category: user-management
 
+## Diagramme de Classe
+
+![Diagramme UML](diagrams/usercontroller_diagram.png)
+
 ## Methods
 
 ### createUser

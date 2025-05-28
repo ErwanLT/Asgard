@@ -66,7 +66,7 @@ mimir:
 - [x] Génération de documentation Markdown
 - [x] Documentation des paramètres de méthodes
 - [x] Documentation des types de retour
-- [ ] Support des diagrammes UML
+- [x] Support des diagrammes UML
 - [x] Documentation des exceptions
 
 ### Knowledge Base (Planifié)

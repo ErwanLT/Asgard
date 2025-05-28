@@ -1,6 +1,7 @@
 package fr.asgard.mimir.config;
 
 import fr.asgard.mimir.service.DocumentationService;
+import fr.asgard.mimir.service.UmlDiagramService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +13,13 @@ public class MimirAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public DocumentationService documentationService(MimirProperties properties) {
-        return new DocumentationService(properties);
+    public UmlDiagramService umlDiagramService(MimirProperties properties) {
+        return new UmlDiagramService(properties);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public DocumentationService documentationService(MimirProperties properties, UmlDiagramService umlDiagramService) {
+        return new DocumentationService(properties, umlDiagramService);
     }
 } 

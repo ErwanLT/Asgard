@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DocumentationService {
     private final MimirProperties properties;
+    private final UmlDiagramService umlDiagramService;
 
     public void generateApiDocumentation(Class<?> clazz) {
         ApiDescription description = clazz.getAnnotation(ApiDescription.class);
@@ -30,6 +31,9 @@ public class DocumentationService {
 
         String content = generateMarkdownContent(clazz, description);
         saveDocumentation(clazz, content);
+        
+        // Générer le diagramme UML
+        umlDiagramService.generateClassDiagram(clazz);
     }
 
     private String generateMarkdownContent(Class<?> clazz, ApiDescription description) {
@@ -52,6 +56,14 @@ public class DocumentationService {
         if (!description.category().isEmpty()) {
             content.append("Category: ").append(description.category()).append("\n\n");
         }
+
+        // Diagramme UML
+        content.append("## Diagramme de Classe\n\n");
+        content.append("![Diagramme UML](")
+              .append("diagrams/")
+              .append(clazz.getSimpleName().toLowerCase())
+              .append("_diagram.png")
+              .append(")\n\n");
 
         // Méthodes
         content.append("## Methods\n\n");

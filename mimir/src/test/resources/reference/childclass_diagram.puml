@@ -1,0 +1,15 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+class ParentClass {
+  + void parentMethod()
+}
+
+class ChildClass {
+  - String childField
+  + void childMethod()
+}
+
+ChildClass --|> ParentClass
+
+@enduml

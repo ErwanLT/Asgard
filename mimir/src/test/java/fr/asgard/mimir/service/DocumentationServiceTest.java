@@ -20,13 +20,15 @@ class DocumentationServiceTest {
     Path tempDir;
 
     private DocumentationService documentationService;
+    private UmlDiagramService umlDiagramService;
     private MimirProperties properties;
 
     @BeforeEach
     void setUp() {
         properties = new MimirProperties();
         properties.getDocumentation().setOutputDir(tempDir.toString());
-        documentationService = new DocumentationService(properties);
+        umlDiagramService = new UmlDiagramService(properties);
+        documentationService = new DocumentationService(properties, umlDiagramService);
     }
 
     @Test
