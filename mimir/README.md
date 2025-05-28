@@ -1,5 +1,5 @@
 # Mimir
-
+![mimir.png](../docs/img/mimir.png)
 Module de documentation automatique pour Spring Boot, inspiré par Mimir, le dieu de la sagesse et de la connaissance dans la mythologie nordique.
 
 ## Fonctionnalités Actuelles
