@@ -11,6 +11,7 @@
 
     <modules>
         <module>heimdall</module>
+        <module>mimir</module>
     </modules>
 
     <properties>

@@ -1,63 +1,62 @@
 # Asgard
 
-Asgard est une suite d'outils et de bibliothèques pour faciliter le développement d'applications Spring Boot.
+Asgard est une suite d'outils et de bibliothèques pour le développement Spring Boot, inspirée par la mythologie nordique.
 
 ## Modules
 
 ### Heimdall
-Module de logging avancé pour Spring Boot qui permet de tracer automatiquement l'exécution des méthodes annotées avec les stéréotypes Spring courants.
+Module de logging avancé pour Spring Boot. [Documentation](heimdall/README.md)
 
-[Documentation Heimdall](heimdall/README.md)
+### Mimir
+Module de gestion des connaissances et de documentation automatique. [Documentation](mimir/README.md)
+
+## Prérequis
+
+- Java 21
+- Maven 3.8+
 
 ## Installation
 
-### Prérequis
-- Java 21 ou supérieur
-- Maven 3.8 ou supérieur
+Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante dans votre `pom.xml` :
 
-### Installation des dépendances
-```bash
-mvn clean install
+```xml
+<dependency>
+    <groupId>fr.eletutour.asgard</groupId>
+    <artifactId>heimdall</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+
+<dependency>
+    <groupId>fr.eletutour.asgard</groupId>
+    <artifactId>mimir</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
-## Structure du projet
+## Structure du Projet
 
 ```
 asgard/
-├── heimdall/           # Module de logging
-│   ├── src/
-│   │   ├── main/
-│   │   └── test/
-│   └── pom.xml
-├── docs/              # Documentation
-│   └── img/          # Images pour la documentation
-├── pom.xml           # POM parent
-└── README.md         # Ce fichier
+├── heimdall/         # Module de logging
+├── mimir/            # Module de documentation
+└── pom.xml          # POM parent
 ```
 
 ## Développement
 
-### Configuration de l'environnement
-1. Cloner le repository
+1. Cloner le repository :
 ```bash
-git clone https://github.com/votre-username/asgard.git
+git clone https://github.com/eletutour/asgard.git
 cd asgard
 ```
 
-2. Installer les dépendances
+2. Installer les dépendances :
 ```bash
 mvn clean install
 ```
 
-### Tests
-Pour exécuter tous les tests :
+3. Exécuter les tests :
 ```bash
-mvn test
-```
-
-Pour exécuter les tests d'un module spécifique :
-```bash
-cd heimdall
 mvn test
 ```
 
@@ -66,16 +65,18 @@ mvn test
 Les contributions sont les bienvenues ! Voici comment contribuer :
 
 1. Fork le projet
-2. Créer une branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`)
-3. Commiter vos changements (`git commit -m 'Add some AmazingFeature'`)
-4. Pousser vers la branche (`git push origin feature/AmazingFeature`)
+2. Créer une branche pour votre fonctionnalité (`git checkout -b feature/amazing-feature`)
+3. Commit vos changements (`git commit -m 'Add some amazing feature'`)
+4. Push vers la branche (`git push origin feature/amazing-feature`)
 5. Ouvrir une Pull Request
 
-### Standards de code
+## Standards de Code
+
 - Suivre les conventions de nommage Java
-- Ajouter des tests unitaires pour les nouvelles fonctionnalités
-- Mettre à jour la documentation
-- Maintenir la couverture de code
+- Documenter le code avec Javadoc
+- Écrire des tests unitaires
+- Maintenir une couverture de code élevée
+- Utiliser Lombok pour réduire le boilerplate
 
 ## Licence
 
