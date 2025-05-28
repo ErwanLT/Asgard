@@ -2,7 +2,6 @@ package fr.asgard.heimdall.aspect;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.web.bind.annotation.RestController;
 
 import static org.mockito.Mockito.*;
