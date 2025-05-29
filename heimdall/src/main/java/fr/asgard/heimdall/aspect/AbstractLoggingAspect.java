@@ -58,7 +58,7 @@ public abstract class AbstractLoggingAspect {
             if (result == null) {
                 return "null";
             }
-            return objectMapper.writeValueAsString(result);
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(result);
         } catch (Exception e) {
             return String.valueOf(result);
         }
