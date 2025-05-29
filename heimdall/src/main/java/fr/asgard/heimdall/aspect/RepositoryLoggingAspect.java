@@ -15,7 +15,7 @@ public class RepositoryLoggingAspect extends AbstractLoggingAspect{
         logger.info("RepositoryLoggingAspect chargé");
     }
 
-    @Around("@within(org.springframework.stereotype.Repository *)")
+    @Around("within(@org.springframework.stereotype.Repository *)")
     public Object logRepository(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "Repository");
     }

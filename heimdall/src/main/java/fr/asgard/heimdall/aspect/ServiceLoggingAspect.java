@@ -15,7 +15,7 @@ public class ServiceLoggingAspect extends AbstractLoggingAspect {
         logger.info("ServiceLoggingAspect chargé");
     }
 
-    @Around("@within(org.springframework.stereotype.Service *)")
+    @Around("within(@org.springframework.stereotype.Service *)")
     public Object logService(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "Service");
     }

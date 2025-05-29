@@ -15,7 +15,7 @@ public class ControllerLoggingAspect extends AbstractLoggingAspect {
         logger.info("ControllerLoggingAspect chargé");
     }
 
-    @Around("@within(org.springframework.stereotype.Controller *)")
+    @Around("within(@org.springframework.stereotype.Controller *)")
     public Object logController(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "Controller");
     }
