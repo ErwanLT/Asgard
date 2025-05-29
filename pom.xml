@@ -12,6 +12,7 @@
     <modules>
         <module>heimdall</module>
         <module>mimir</module>
+        <module>baldr</module>
     </modules>
 
     <properties>
