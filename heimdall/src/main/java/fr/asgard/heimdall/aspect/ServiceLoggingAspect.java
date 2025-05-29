@@ -3,10 +3,12 @@ package fr.asgard.heimdall.aspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
+@ConditionalOnProperty(name = "heimdall.logging.service.enabled", havingValue = "true", matchIfMissing = false)
 public class ServiceLoggingAspect extends AbstractLoggingAspect {
 
     @Around("@annotation(org.springframework.stereotype.Service)")

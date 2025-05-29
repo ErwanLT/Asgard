@@ -3,11 +3,13 @@ package fr.asgard.heimdall.aspect;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-public class RepositoryLoggingAspect extends AbstractLoggingAspect {
+@ConditionalOnProperty(name = "heimdall.logging.repository.enabled", havingValue = "true", matchIfMissing = false)
+public class RepositoryLoggingAspect extends AbstractLoggingAspect{
 
     @Around("@annotation(org.springframework.stereotype.Repository)")
     public Object logRepository(ProceedingJoinPoint joinPoint) throws Throwable {

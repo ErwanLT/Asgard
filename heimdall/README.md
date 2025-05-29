@@ -68,9 +68,42 @@ Pour chaque type d'annotation, les aspects capturent :
 </dependency>
 ```
 
-2. Les aspects sont automatiquement activés grâce à l'auto-configuration Spring Boot.
+## Configuration
 
-3. Aucune configuration supplémentaire n'est nécessaire. Les aspects intercepteront automatiquement toutes les méthodes des classes annotées.
+### Activation des Aspects
+
+Par défaut, tous les aspects sont désactivés. Vous devez activer explicitement chaque type de logging que vous souhaitez utiliser dans votre `application.yml` :
+
+```yaml
+heimdall:
+  logging:
+    repository:
+      enabled: true    # Active le logging des repositories
+    service:
+      enabled: false   # Désactive le logging des services
+    controller:
+      enabled: false   # Désactive le logging des controllers
+    rest:
+      enabled: false   # Désactive le logging des REST controllers
+    component:
+      enabled: false   # Désactive le logging des composants génériques
+```
+
+### Utilisation
+
+Pour logger une méthode, utilisez l'annotation `@Log` :
+
+```java
+@Repository
+public class UserRepository {
+    
+    @Log
+    public User findById(Long id) {
+        // Votre code ici
+    }
+}
+```
+
 
 ## Tests
 
