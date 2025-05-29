@@ -64,4 +64,13 @@ public class Author {
     public void setArticles(List<Article> articles) {
         this.articles = articles;
     }
+
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", bio='" + bio + '\'' +
+                '}';
+    }
 }
