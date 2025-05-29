@@ -89,22 +89,6 @@ heimdall:
       enabled: false   # Désactive le logging des composants génériques
 ```
 
-### Utilisation
-
-Pour logger une méthode, utilisez l'annotation `@Log` :
-
-```java
-@Repository
-public class UserRepository {
-    
-    @Log
-    public User findById(Long id) {
-        // Votre code ici
-    }
-}
-```
-
-
 ## Tests
 
 Le module inclut une suite complète de tests unitaires pour chaque aspect :

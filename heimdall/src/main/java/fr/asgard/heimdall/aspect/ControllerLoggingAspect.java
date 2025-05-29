@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(name = "heimdall.logging.controller.enabled", havingValue = "true", matchIfMissing = false)
 public class ControllerLoggingAspect extends AbstractLoggingAspect {
 
-    @Around("@annotation(org.springframework.stereotype.Controller)")
+    public ControllerLoggingAspect() {
+        logger.info("ControllerLoggingAspect chargé");
+    }
+
+    @Around("@within(org.springframework.stereotype.Controller *)")
     public Object logController(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "Controller");
     }

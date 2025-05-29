@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(name = "heimdall.logging.service.enabled", havingValue = "true", matchIfMissing = false)
 public class ServiceLoggingAspect extends AbstractLoggingAspect {
 
-    @Around("@annotation(org.springframework.stereotype.Service)")
+    public ServiceLoggingAspect() {
+        logger.info("ServiceLoggingAspect chargé");
+    }
+
+    @Around("@within(org.springframework.stereotype.Service *)")
     public Object logService(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "Service");
     }

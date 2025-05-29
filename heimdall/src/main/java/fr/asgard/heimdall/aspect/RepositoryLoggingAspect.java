@@ -11,7 +11,11 @@ import org.springframework.stereotype.Component;
 @ConditionalOnProperty(name = "heimdall.logging.repository.enabled", havingValue = "true", matchIfMissing = false)
 public class RepositoryLoggingAspect extends AbstractLoggingAspect{
 
-    @Around("@annotation(org.springframework.stereotype.Repository)")
+    public RepositoryLoggingAspect() {
+        logger.info("RepositoryLoggingAspect chargé");
+    }
+
+    @Around("@within(org.springframework.stereotype.Repository *)")
     public Object logRepository(ProceedingJoinPoint joinPoint) throws Throwable {
         return logMethod(joinPoint, "Repository");
     }

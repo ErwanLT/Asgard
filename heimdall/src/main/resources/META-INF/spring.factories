@@ -1,2 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-fr.eletutour.asgard.heimdall.configuration.HeimdallAutoConfiguration 
