@@ -13,6 +13,9 @@ Module de logging avancé pour Spring Boot. [Documentation](heimdall/README.md)
 ### Mimir
 Module de gestion des connaissances et de documentation automatique. [Documentation](mimir/README.md)
 
+### Baldr
+Module de test d'intégration pour simuler des conditions réelles d'utilisation. [Documentation](baldr/README.md)
+
 ## Prérequis
 
 - Java 21
@@ -34,6 +37,12 @@ Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante
     <artifactId>mimir</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
+
+<dependency>
+    <groupId>fr.eletutour.asgard</groupId>
+    <artifactId>baldr</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
 ## Structure du Projet
@@ -42,6 +51,7 @@ Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante
 asgard/
 ├── heimdall/         # Module de logging
 ├── mimir/            # Module de documentation
+├── baldr/            # Module de test d'intégration
 └── pom.xml          # POM parent
 ```
 
