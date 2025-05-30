@@ -3,7 +3,6 @@
   <img width="440" alt="image" src="../docs/img/mimir.png" />
 </div>
 
-
 Module de documentation automatique pour Spring Boot, inspiré par Mimir, le dieu de la sagesse et de la connaissance dans la mythologie nordique.
 
 ## Fonctionnalités Actuelles
@@ -15,14 +14,10 @@ Module de documentation automatique pour Spring Boot, inspiré par Mimir, le die
   - Description de la classe
   - Tags
   - Catégorie
+  - Ordre des méthodes
   - Documentation des méthodes
-  - Documentation des paramètres
   - Documentation des types de retour
   - Documentation des exceptions
-- Génération automatique de diagrammes UML pour les classes
-- Stockage de la documentation dans Elasticsearch
-- Configuration via application.yml
-- Intégration avec Spring Boot
 - Validation des annotations au démarrage
 - Formatage automatique du Markdown
 - Logging des opérations
@@ -53,80 +48,44 @@ Utilisez l'annotation `@ApiDescription` pour documenter vos classes et méthodes
 )
 public class MaClasse {
     
-    @ApiDescription("Description de la méthode")
-    public void maMethode() {
+    @ApiDescription(
+        value = "Description de la méthode",
+        tags = {"tag1", "tag2"},
+        category = "ma-categorie",
+        order = 1,
+        returnType = "String",
+        throws_ = {
+            @ApiDescription.Throws(
+                exception = Exception.class,
+                description = "Description de l'exception"
+            )
+        }
+    )
+    public String maMethode() throws Exception {
+        // ...
+    }
+
+    @ApiDescription("Description du paramètre")
+    public void autreMethode(@ApiDescription("Description du paramètre") String param) {
         // ...
     }
 }
 ```
 
-### Configuration
+### Structure de l'annotation @ApiDescription
 
-Configurez le module dans votre `application.yml` :
+L'annotation `@ApiDescription` peut être utilisée sur les classes, méthodes et paramètres avec les attributs suivants :
 
-```yaml
-mimir:
-  documentation:
-    output-dir: docs/
-    format: markdown
-    languages:
-      - java
-      - kotlin
-```
+#### Pour les classes et méthodes :
+- `value()` : Description principale
+- `tags()` : Tableau de tags pour la catégorisation
+- `category()` : Catégorie de l'élément
+- `order()` : Ordre d'affichage (par défaut : 0)
+- `returnType()` : Type de retour (uniquement pour les méthodes)
+- `throws_()` : Liste des exceptions possibles (uniquement pour les méthodes)
 
-## Roadmap
-
-### Documentation Automatique (En cours)
-- [x] Génération de documentation Markdown
-- [x] Documentation des paramètres de méthodes
-- [x] Documentation des types de retour
-- [x] Support des diagrammes UML
-- [x] Documentation des exceptions
-- [x] Stockage dans Elasticsearch
-- [ ] Interface REST pour accéder à la documentation
-- [ ] Recherche en texte intégral dans la documentation
-- [x] Filtrage par tags et catégories
-- [ ] Export en différents formats (PDF, HTML)
-
-### Knowledge Base (Planifié)
-- [ ] Base de connaissances centralisée
-- [ ] Articles techniques
-- [ ] Guides de démarrage
-- [ ] FAQ
-- [ ] Solutions aux problèmes courants
-- [ ] Documentation interactive
-- [ ] Exemples de code
-- [ ] Tutoriels vidéo
-
-### Analyse de Code (Planifié)
-- [ ] Détection de patterns
-- [ ] Identification d'anti-patterns
-- [ ] Suggestions d'amélioration
-- [ ] Métriques de qualité de code
-- [ ] Couverture de tests
-- [ ] Analyse de complexité cyclomatique
-- [ ] Détection de code mort
-- [ ] Analyse de dépendances
-
-### Intégration (Planifié)
-- [ ] Intégration avec Jira
-- [ ] Intégration avec Confluence
-- [ ] Intégration avec GitHub/GitLab
-- [ ] Notifications Slack
-- [ ] Intégration avec Swagger/OpenAPI
-- [ ] Intégration avec Postman
-- [ ] Intégration avec VS Code
-- [ ] Intégration avec IntelliJ IDEA
-
-### Recherche et Navigation (Planifié)
-- [ ] Recherche en texte intégral
-- [x] Navigation par tags et catégories
-- [ ] Suggestions de documentation pertinente
-- [ ] Historique des modifications
-- [ ] Recherche sémantique
-- [ ] Auto-complétion
-- [ ] Navigation par graphe de dépendances
-- [ ] Filtres avancés
+#### Pour les paramètres :
+- `value()` : Description du paramètre
 
 ## Tests
 
