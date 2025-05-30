@@ -17,12 +17,6 @@ import java.util.concurrent.TimeoutException;
 @ControllerAdvice
 public class MyExceptionHandler extends ResponseEntityExceptionHandler {
 
-    private final Logger LOGGER = LoggerFactory.getLogger(MyExceptionHandler.class);
-
-    private MyExceptionHandler() {
-        LOGGER.info("MyExceptionHandler actif");
-    }
-
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleExceptions(Exception e) {
         return switch (e) {

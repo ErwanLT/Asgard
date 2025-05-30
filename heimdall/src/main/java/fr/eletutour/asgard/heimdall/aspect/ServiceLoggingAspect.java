@@ -1,4 +1,4 @@
-package fr.asgard.heimdall.aspect;
+package fr.eletutour.asgard.heimdall.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -8,33 +8,33 @@ import org.springframework.stereotype.Component;
 
 @Aspect
 @Component
-@ConditionalOnProperty(name = "heimdall.logging.controller.enabled", havingValue = "true", matchIfMissing = false)
-public class ControllerLoggingAspect extends AbstractLoggingAspect {
+@ConditionalOnProperty(name = "heimdall.logging.service.enabled", havingValue = "true", matchIfMissing = false)
+public class ServiceLoggingAspect extends AbstractLoggingAspect {
 
-    public ControllerLoggingAspect() {
-        logger.info("ControllerLoggingAspect chargé");
+    public ServiceLoggingAspect() {
+        logger.info("ServiceLoggingAspect chargé");
     }
 
-    @Around("within(@org.springframework.stereotype.Controller *)")
-    public Object logController(ProceedingJoinPoint joinPoint) throws Throwable {
-        return logMethod(joinPoint, "Controller");
+    @Around("within(@org.springframework.stereotype.Service *)")
+    public Object logService(ProceedingJoinPoint joinPoint) throws Throwable {
+        return logMethod(joinPoint, "Service");
     }
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("📝 [{}] Début du rendu de vue - Méthode: {} - Classe: {} - Paramètres: {}", 
+        logger.info("⚙️ [{}] Début du traitement métier - Méthode: {} - Classe: {} - Paramètres: {}", 
             annotationType, methodName, className, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("📄 [{}] Fin du rendu de vue - Méthode: {} - Classe: {} - Vue: {}", 
+        logger.info("🔧 [{}] Fin du traitement métier - Méthode: {} - Classe: {} - Résultat: {}", 
             annotationType, methodName, className, result);
     }
 
     @Override
     protected void logError(String annotationType, String methodName, String className, Exception e) {
-        logger.error("⚠️ [{}] Erreur de rendu - Méthode: {} - Classe: {} - Message: {}", 
+        logger.error("💥 [{}] Erreur métier - Méthode: {} - Classe: {} - Message: {}", 
             annotationType, methodName, className, e.getMessage());
     }
 } 

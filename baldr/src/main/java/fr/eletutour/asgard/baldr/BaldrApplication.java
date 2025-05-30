@@ -7,7 +7,6 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 @ComponentScan(basePackages = {
         "fr.eletutour.asgard.*",
-        "fr.asgard.heimdall",// module contenant les aspects
 })
 public class BaldrApplication {
 

@@ -1,28 +1,29 @@
-package fr.asgard.heimdall.aspect;
+package fr.eleturour.asgard.heimdall.aspect;
 
+import fr.eletutour.asgard.heimdall.aspect.RepositoryLoggingAspect;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import static org.mockito.Mockito.*;
 
-@Service
-class TestService {
+@Repository
+class TestRepository {
     public String testMethod(String param1, Integer param2) {
         return "result";
     }
 }
 
-class ServiceLoggingAspectTest extends AbstractLoggingAspectTest {
+class RepositoryLoggingAspectTest extends AbstractLoggingAspectTest {
 
-    private ServiceLoggingAspect aspect;
+    private RepositoryLoggingAspect aspect;
 
     @BeforeEach
     void setUp() throws NoSuchMethodException {
         super.setUp();
-        aspect = new ServiceLoggingAspect();
-        target = new TestService();
-        method = TestService.class.getMethod("testMethod", String.class, Integer.class);
+        aspect = new RepositoryLoggingAspect();
+        target = new TestRepository();
+        method = TestRepository.class.getMethod("testMethod", String.class, Integer.class);
     }
 
     @Test
@@ -31,7 +32,7 @@ class ServiceLoggingAspectTest extends AbstractLoggingAspectTest {
         when(joinPoint.proceed()).thenReturn("result");
 
         // When
-        aspect.logService(joinPoint);
+        aspect.logRepository(joinPoint);
 
         // Then
         verify(joinPoint).proceed();
@@ -45,7 +46,7 @@ class ServiceLoggingAspectTest extends AbstractLoggingAspectTest {
 
         // When/Then
         try {
-            aspect.logService(joinPoint);
+            aspect.logRepository(joinPoint);
         } catch (RuntimeException e) {
             // Expected exception
         }

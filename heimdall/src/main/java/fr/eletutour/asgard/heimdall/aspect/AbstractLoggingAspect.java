@@ -1,4 +1,4 @@
-package fr.asgard.heimdall.aspect;
+package fr.eletutour.asgard.heimdall.aspect;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.aspectj.lang.ProceedingJoinPoint;

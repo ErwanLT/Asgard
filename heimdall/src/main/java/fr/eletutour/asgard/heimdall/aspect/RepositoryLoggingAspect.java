@@ -1,4 +1,4 @@
-package fr.asgard.heimdall.aspect;
+package fr.eletutour.asgard.heimdall.aspect;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

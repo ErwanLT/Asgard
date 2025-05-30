@@ -1,28 +1,29 @@
-package fr.asgard.heimdall.aspect;
+package fr.eleturour.asgard.heimdall.aspect;
 
+import fr.eletutour.asgard.heimdall.aspect.ComponentLoggingAspect;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import static org.mockito.Mockito.*;
 
-@RestController
-class TestRestController {
+@Component
+class TestComponent {
     public String testMethod(String param1, Integer param2) {
         return "result";
     }
 }
 
-class RestControllerLoggingAspectTest extends AbstractLoggingAspectTest {
+class ComponentLoggingAspectTest extends AbstractLoggingAspectTest {
 
-    private RestControllerLoggingAspect aspect;
+    private ComponentLoggingAspect aspect;
 
     @BeforeEach
     void setUp() throws NoSuchMethodException {
         super.setUp();
-        aspect = new RestControllerLoggingAspect();
-        target = new TestRestController();
-        method = TestRestController.class.getMethod("testMethod", String.class, Integer.class);
+        aspect = new ComponentLoggingAspect();
+        target = new TestComponent();
+        method = TestComponent.class.getMethod("testMethod", String.class, Integer.class);
     }
 
     @Test
@@ -31,7 +32,7 @@ class RestControllerLoggingAspectTest extends AbstractLoggingAspectTest {
         when(joinPoint.proceed()).thenReturn("result");
 
         // When
-        aspect.logRestController(joinPoint);
+        aspect.logComponent(joinPoint);
 
         // Then
         verify(joinPoint).proceed();
@@ -45,7 +46,7 @@ class RestControllerLoggingAspectTest extends AbstractLoggingAspectTest {
 
         // When/Then
         try {
-            aspect.logRestController(joinPoint);
+            aspect.logComponent(joinPoint);
         } catch (RuntimeException e) {
             // Expected exception
         }

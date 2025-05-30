@@ -1,4 +1,4 @@
-package fr.asgard.heimdall;
+package fr.eletutour.asgard.heimdall;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
