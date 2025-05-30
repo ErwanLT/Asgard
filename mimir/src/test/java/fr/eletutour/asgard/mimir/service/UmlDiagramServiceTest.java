@@ -1,6 +1,6 @@
-package fr.asgard.mimir.service;
+package fr.eletutour.asgard.mimir.service;
 
-import fr.asgard.mimir.config.MimirProperties;
+import fr.eletutour.asgard.mimir.config.MimirProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

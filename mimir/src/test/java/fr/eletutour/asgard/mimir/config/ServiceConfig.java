@@ -1,8 +1,7 @@
-package fr.asgard.mimir.config;
+package fr.eletutour.asgard.mimir.config;
 
-import fr.asgard.mimir.service.DocumentationService;
-import fr.asgard.mimir.service.SearchService;
-import fr.asgard.mimir.service.UmlDiagramService;
+import fr.eletutour.asgard.mimir.service.DocumentationService;
+import fr.eletutour.asgard.mimir.service.UmlDiagramService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -20,14 +19,8 @@ public class ServiceConfig {
 
     @Bean
     @Primary
-    public SearchService searchService() {
-        return new SearchService(null, null);
-    }
-
-    @Bean
-    @Primary
     public DocumentationService documentationService() {
-        return new DocumentationService(mimirProperties(), null, null);
+        return new DocumentationService(mimirProperties(), null);
     }
 
     @Bean

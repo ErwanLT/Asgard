@@ -1,8 +1,7 @@
-package fr.asgard.mimir.service;
+package fr.eletutour.asgard.mimir.service;
 
-import fr.asgard.mimir.annotation.ApiDescription;
-import fr.asgard.mimir.config.MimirProperties;
-import fr.asgard.mimir.model.DocumentationEntry;
+import fr.eletutour.asgard.mimir.annotation.ApiDescription;
+import fr.eletutour.asgard.mimir.config.MimirProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,39 +35,14 @@ class DocumentationServiceTest {
     @Mock
     private UmlDiagramService umlDiagramService;
 
-    @Mock
-    private SearchService searchService;
-
     @InjectMocks
     private DocumentationService documentationService;
 
     private Path tempDir;
-    private DocumentationEntry entry1;
-    private DocumentationEntry entry2;
 
     @BeforeEach
     void setUp() throws IOException {
         tempDir = Files.createTempDirectory("mimir-test");
-
-        entry1 = DocumentationEntry.builder()
-                .id("1")
-                .title("Test Documentation 1")
-                .content("Contenu de test 1")
-                .tags(Arrays.asList("test", "java"))
-                .category("API")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
-
-        entry2 = DocumentationEntry.builder()
-                .id("2")
-                .title("Test Documentation 2")
-                .content("Contenu de test 2")
-                .tags(Arrays.asList("test", "spring"))
-                .category("Guide")
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
-                .build();
     }
 
     @Test
@@ -115,80 +89,6 @@ class DocumentationServiceTest {
             .contains("`RuntimeException` : If something goes wrong");
 
         verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
-    }
-
-    @Test
-    void shouldSearchDocumentation() {
-        // Given
-        String query = "test";
-        Page<DocumentationEntry> expectedPage = new PageImpl<>(Arrays.asList(entry1, entry2));
-        when(searchService.search(eq(query), isNull())).thenReturn(expectedPage);
-
-        // When
-        List<DocumentationEntry> result = documentationService.searchDocumentation(query);
-
-        // Then
-        assertThat(result).hasSize(2);
-        assertThat(result).containsExactly(entry1, entry2);
-        verify(searchService).search(eq(query), isNull());
-    }
-
-    @Test
-    void shouldSearchByTags() {
-        // Given
-        List<String> tags = Arrays.asList("test", "java");
-        when(searchService.searchByTags(tags)).thenReturn(Arrays.asList(entry1));
-
-        // When
-        List<DocumentationEntry> result = documentationService.searchByTags(tags);
-
-        // Then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo(entry1);
-        verify(searchService).searchByTags(tags);
-    }
-
-    @Test
-    void shouldSearchByCategory() {
-        // Given
-        String category = "API";
-        when(searchService.searchByCategory(category)).thenReturn(Arrays.asList(entry1));
-
-        // When
-        List<DocumentationEntry> result = documentationService.searchByCategory(category);
-
-        // Then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0)).isEqualTo(entry1);
-        verify(searchService).searchByCategory(category);
-    }
-
-    @Test
-    void shouldGetAllTags() {
-        // Given
-        List<String> expectedTags = Arrays.asList("test", "java", "spring");
-        when(searchService.getAllTags()).thenReturn(expectedTags);
-
-        // When
-        List<String> tags = documentationService.getAllTags();
-
-        // Then
-        assertThat(tags).isEqualTo(expectedTags);
-        verify(searchService).getAllTags();
-    }
-
-    @Test
-    void shouldGetAllCategories() {
-        // Given
-        List<String> expectedCategories = Arrays.asList("API", "Guide");
-        when(searchService.getAllCategories()).thenReturn(expectedCategories);
-
-        // When
-        List<String> categories = documentationService.getAllCategories();
-
-        // Then
-        assertThat(categories).isEqualTo(expectedCategories);
-        verify(searchService).getAllCategories();
     }
 
     @Test

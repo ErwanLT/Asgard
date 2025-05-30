@@ -1,8 +1,7 @@
-package fr.asgard.mimir.service;
+package fr.eletutour.asgard.mimir.service;
 
-import fr.asgard.mimir.annotation.ApiDescription;
-import fr.asgard.mimir.config.MimirProperties;
-import fr.asgard.mimir.model.DocumentationEntry;
+import fr.eletutour.asgard.mimir.annotation.ApiDescription;
+import fr.eletutour.asgard.mimir.config.MimirProperties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 public class DocumentationService {
     private final MimirProperties properties;
     private final UmlDiagramService umlDiagramService;
-    private final SearchService searchService;
 
     public void generateDocumentation(Class<?> clazz) {
         log.info("Génération de la documentation pour la classe: {}", clazz.getName());
@@ -43,26 +41,6 @@ public class DocumentationService {
             log.error("Erreur lors de la génération de la documentation", e);
             throw new RuntimeException("Erreur lors de la génération de la documentation", e);
         }
-    }
-
-    public List<DocumentationEntry> searchDocumentation(String query) {
-        return searchService.search(query, null).getContent();
-    }
-
-    public List<DocumentationEntry> searchByTags(List<String> tags) {
-        return searchService.searchByTags(tags);
-    }
-
-    public List<DocumentationEntry> searchByCategory(String category) {
-        return searchService.searchByCategory(category);
-    }
-
-    public List<String> getAllTags() {
-        return searchService.getAllTags();
-    }
-
-    public List<String> getAllCategories() {
-        return searchService.getAllCategories();
     }
 
     private String generateMarkdownContent(Class<?> clazz) {

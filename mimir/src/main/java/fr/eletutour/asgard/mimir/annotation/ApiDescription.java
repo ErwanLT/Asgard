@@ -1,4 +1,4 @@
-package fr.asgard.mimir.annotation;
+package fr.eletutour.asgard.mimir.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
