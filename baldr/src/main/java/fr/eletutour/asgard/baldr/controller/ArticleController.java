@@ -1,5 +1,6 @@
 package fr.eletutour.asgard.baldr.controller;
 
+import fr.eletutour.asgard.baldr.exception.ArticleNotFoundException;
 import fr.eletutour.asgard.baldr.model.Article;
 import fr.eletutour.asgard.baldr.service.ArticleService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,6 +10,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +31,8 @@ import java.util.concurrent.TimeoutException;
 @RequestMapping("/articles")
 @Tag(name = "Articles", description = "API de gestion des articles")
 public class ArticleController {
+
+    private static final Logger log = LoggerFactory.getLogger(ArticleController.class);
 
     private final ArticleService articleService;
 
@@ -51,12 +57,12 @@ public class ArticleController {
                      content = @Content(mediaType = "application/json",
                                         schema = @Schema(implementation = Article.class))),
         @ApiResponse(responseCode = "404", description = "Article non trouvé"),
-        @ApiResponse(responseCode = "408", description = "Délai d'attente dépassé")
+        @ApiResponse(responseCode = "408", description = "Délai d'attente dépassé"),
+        @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<?> getArticleByIdAvecTimeout(@Parameter(name = "id", description = "ID de l'article à récupérer") @PathVariable Long id) throws TimeoutException, InterruptedException, ExecutionException {
+    public ResponseEntity<?> getArticleByIdAvecTimeout(@Parameter(name = "id", description = "ID de l'article à récupérer") @PathVariable("id") Long id) throws TimeoutException, InterruptedException, ExecutionException {
         ExecutorService executor = Executors.newSingleThreadExecutor();
-
         Future<Article> future = executor.submit(() -> articleService.getArticleById(id));
 
         try {
@@ -66,5 +72,4 @@ public class ArticleController {
             executor.shutdownNow();
         }
     }
-
 }

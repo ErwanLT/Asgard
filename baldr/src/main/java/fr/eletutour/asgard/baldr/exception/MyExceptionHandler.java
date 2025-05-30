@@ -81,7 +81,7 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
                     "",
                     "",
                     "Une erreur est survenue",
-                    Map.of()
+                    Map.of("error", e.getMessage())
             );
         };
     }
@@ -92,8 +92,7 @@ public class MyExceptionHandler extends ResponseEntityExceptionHandler {
         problemDetail.setInstance(URI.create(instance));
         problemDetail.setType(URI.create(type));
         problemDetail.setDetail(detail);
-        properties.entrySet().stream()
-                .forEach(entry -> problemDetail.setProperty(entry.getKey(), entry.getValue()));
+        properties.forEach(problemDetail::setProperty);
         return problemDetail;
     }
 
