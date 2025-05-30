@@ -16,6 +16,9 @@ Module de gestion des connaissances et de documentation automatique. [Documentat
 ### Baldr
 Module de test d'intégration pour simuler des conditions réelles d'utilisation. [Documentation](baldr/README.md)
 
+### Hel
+Module de gestion de l'arrêt contrôlé des applications Spring Boot. [Documentation](hel/README.md)
+
 ## Prérequis
 
 - Java 21
@@ -43,6 +46,12 @@ Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante
     <artifactId>baldr</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
+
+<dependency>
+    <groupId>fr.eletutour.asgard</groupId>
+    <artifactId>hel</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
 ## Structure du Projet
@@ -52,6 +61,7 @@ asgard/
 ├── heimdall/         # Module de logging
 ├── mimir/            # Module de documentation
 ├── baldr/            # Module de test d'intégration
+├── hel/              # Module de gestion de l'arrêt
 └── pom.xml          # POM parent
 ```
 

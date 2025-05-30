@@ -4,18 +4,35 @@ import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.support.CronTrigger;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * Service responsable de la gestion de l'arrêt de l'application.
+ * Ce service offre deux modes d'arrêt :
+ * - Un arrêt immédiat avec un délai de 1 seconde
+ * - Un arrêt programmé basé sur une expression cron
+ */
 @Service
 public class HelService {
 
     private final TaskScheduler taskScheduler;
     private ScheduledFuture<?> scheduledShutdown;
 
+    /**
+     * Constructeur du service.
+     *
+     * @param taskScheduler Le planificateur de tâches utilisé pour les arrêts programmés
+     */
     public HelService(TaskScheduler taskScheduler) {
         this.taskScheduler = taskScheduler;
     }
 
+    /**
+     * Arrête l'application immédiatement après un délai de 1 seconde.
+     * Le délai permet de s'assurer que la réponse HTTP est envoyée avant l'arrêt.
+     * L'arrêt est effectué via System.exit(0).
+     */
     public void shutdownImmediate() {
         new Thread(() -> {
             try {
@@ -27,14 +44,23 @@ public class HelService {
         }).start();
     }
 
+    /**
+     * Programme l'arrêt de l'application selon une expression cron.
+     * Si un arrêt était déjà programmé, il est annulé avant d'en programmer un nouveau.
+     *
+     * @param cronExpression L'expression cron définissant quand l'application doit s'arrêter
+     *                      Format: "second minute hour day-of-month month day-of-week"
+     *                      Exemple: "0 0 0 * * ?" pour un arrêt tous les jours à minuit
+     * @throws IllegalArgumentException si l'expression cron est invalide
+     */
     public void scheduleShutdown(String cronExpression) {
         if (scheduledShutdown != null) {
             scheduledShutdown.cancel(false);
         }
 
         scheduledShutdown = taskScheduler.schedule(
-                this::shutdownImmediate,
-                new CronTrigger(cronExpression)
+            this::shutdownImmediate,
+            new CronTrigger(cronExpression)
         );
     }
 }

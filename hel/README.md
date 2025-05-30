@@ -11,6 +11,7 @@ Le module Hel est un composant Spring Boot qui fournit des API REST pour gérer 
 - Arrêt programmé avec expression cron
 - Auto-configuration Spring Boot
 - Intégration transparente dans n'importe quelle application Spring Boot
+- Documentation OpenAPI (Swagger) intégrée
 
 ## Installation
 
@@ -24,6 +25,28 @@ Ajoutez la dépendance suivante dans votre `pom.xml` :
 </dependency>
 ```
 
+## Documentation API
+
+La documentation OpenAPI est disponible à l'URL : `/swagger-ui.html`
+
+### Endpoints disponibles
+
+#### Arrêt immédiat
+- **URL**: `/hel/immediate`
+- **Méthode**: POST
+- **Description**: Arrête l'application immédiatement après un délai de 1 seconde
+- **Réponse**: 200 OK avec message de confirmation
+
+#### Arrêt programmé
+- **URL**: `/hel/scheduled`
+- **Méthode**: POST
+- **Paramètres**:
+  - `cronExpression` (requis): Expression cron pour programmer l'arrêt
+- **Description**: Programme l'arrêt de l'application selon une expression cron
+- **Réponses**:
+  - 200 OK: Arrêt programmé avec succès
+  - 400 Bad Request: Expression cron invalide
+
 ## Utilisation
 
 ### Arrêt immédiat
@@ -31,7 +54,7 @@ Ajoutez la dépendance suivante dans votre `pom.xml` :
 Pour arrêter l'application immédiatement :
 
 ```bash
-curl -X POST http://localhost:8080/api/shutdown/immediate
+curl -X POST http://localhost:8080/hel/immediate
 ```
 
 ### Arrêt programmé
@@ -39,7 +62,7 @@ curl -X POST http://localhost:8080/api/shutdown/immediate
 Pour programmer un arrêt avec une expression cron :
 
 ```bash
-curl -X POST "http://localhost:8080/api/shutdown/scheduled?cronExpression=0 0 0 * * ?"
+curl -X POST "http://localhost:8080/hel/scheduled?cronExpression=0 0 0 * * ?"
 ```
 
 #### Format des expressions cron
@@ -70,6 +93,7 @@ Le module s'auto-configure automatiquement lorsqu'il est ajouté comme dépendan
 - Spring Boot Web
 - Spring Boot Validation
 - Spring Boot AutoConfigure
+- SpringDoc OpenAPI (Swagger)
 
 ## Licence
 
