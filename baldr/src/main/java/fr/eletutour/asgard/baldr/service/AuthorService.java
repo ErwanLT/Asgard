@@ -9,22 +9,49 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 
+/**
+ * Service gérant les opérations liées aux auteurs.
+ */
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
 
+    /**
+     * Constructeur du service AuthorService.
+     *
+     * @param authorRepository Le repository pour accéder aux données des auteurs.
+     */
     public AuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
     }
 
+    /**
+     * Récupère la liste de tous les auteurs.
+     *
+     * @return La liste de tous les auteurs.
+     */
     public List<Author> getAuthors() {
         return authorRepository.findAll();
     }
 
+    /**
+     * Récupère un auteur par son identifiant.
+     *
+     * @param id L'identifiant de l'auteur.
+     * @return L'auteur correspondant à l'identifiant.
+     * @throws AuthorNotFoundException Si aucun auteur n'est trouvé avec l'identifiant spécifié.
+     */
     public Author getAuthorById(Long id) throws AuthorNotFoundException {
         return authorRepository.findById(id).orElseThrow( () -> new AuthorNotFoundException("Author non trouvé pour l'id : " + id, id));
     }
 
+    /**
+     * Crée un nouvel auteur.
+     *
+     * @param name Le nom de l'auteur.
+     * @param bio La biographie de l'auteur.
+     * @return L'auteur créé.
+     */
     public Author createAuthor(String name, String bio) {
         Author author = new Author();
         author.setName(name);
@@ -32,6 +59,10 @@ public class AuthorService {
         return authorRepository.save(author);
     }
 
+    /**
+     * Initialise la base de données avec des auteurs par défaut.
+     * Cette méthode est exécutée après la construction de l'objet.
+     */
     @PostConstruct
     private void initAuthors(){
         createAuthor("J.K. Rowling", "J.K. Rowling is the author of the much-loved series of seven Harry Potter novels.");
