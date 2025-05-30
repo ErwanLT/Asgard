@@ -1,6 +1,6 @@
 # Module Hel
 <div align="center">
-  <img width="440" alt="image" src="../docs/img/hel_1.png" />
+  <img width="440" alt="image" src="../docs/img/Hel_1.png" />
 </div>
 
 Le module Hel est un composant Spring Boot qui fournit des API REST pour gérer l'arrêt d'une application de manière contrôlée. Il offre deux modes d'arrêt : immédiat et programmé.
