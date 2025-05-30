@@ -2,18 +2,20 @@ package fr.eletutour.asgard.mimir.controller;
 
 import fr.eletutour.asgard.mimir.annotation.ApiDescription;
 import fr.eletutour.asgard.mimir.service.DocumentationService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/documentation")
+@RequestMapping("/mimir")
 @ApiDescription(
         value = "API de documentation Mimir",
         tags = {"documentation", "api"},
         category = "api"
 )
-public class DocumentationController {
+@Tag(name = "Mimir", description = "API de gestion de la documentation de l'application")
+public class MimirController {
 
     @Autowired
     private DocumentationService documentationService;
