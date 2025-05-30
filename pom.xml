@@ -13,6 +13,7 @@
         <module>heimdall</module>
         <module>mimir</module>
         <module>baldr</module>
+        <module>hel</module>
     </modules>
 
     <properties>
