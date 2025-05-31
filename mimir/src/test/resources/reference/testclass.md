@@ -4,7 +4,12 @@ Test API description
 
 ## Diagramme de Classe
 
-![Diagramme UML](diagrams/testclass_diagram.png)
+```mermaid
+classDiagram
+class TestClass {
++void testMethod()
+}
+```
 
 ## Methods
 

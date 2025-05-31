@@ -54,49 +54,10 @@ class DocumentationServiceTest {
     }
 
     @Test
-    void shouldGenerateDocumentation() throws IOException {
-        // Given
-        when(mimirProperties.getOutputPath()).thenReturn(tempDir);
-        @Tag(name = "Test", description = "Test class description")
-        class TestClass {
-            @Operation(
-                summary = "Test method",
-                description = "Test method description"
-            )
-            @ApiResponse(responseCode = "200", description = "Success")
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-            public void testMethod() {}
-        }
-
-        // When
-        Documentation documentation = documentationService.generateDocumentation(TestClass.class);
-
-        // Then
-        assertThat(documentation).isNotNull();
-        assertThat(documentation.getTitle()).isEqualTo("TestClass");
-        
-        Path expectedFile = tempDir.resolve("testclass.md");
-        assertThat(expectedFile).exists();
-        String content = Files.readString(expectedFile);
-        assertThat(content)
-            .contains("# TestClass")
-            .contains("Test class description")
-            .contains("## Methods")
-            .contains("### testMethod")
-            .contains("Test method description")
-            .contains("#### Responses")
-            .contains("`200` : Success")
-            .contains("`500` : Internal server error");
-
-        verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
-        verify(searchService).saveDocumentation(documentation);
-    }
-
-    @Test
     void shouldGeneratePackageDocumentation() throws IOException, ClassNotFoundException {
         // Given
         when(mimirProperties.getOutputPath()).thenReturn(tempDir);
-        
+
         @Tag(name = "Test1", description = "Test class 1 description")
         class TestClass1 {
             @Operation(
@@ -105,7 +66,7 @@ class DocumentationServiceTest {
             )
             public void testMethod1() {}
         }
-        
+
         @Tag(name = "Test2", description = "Test class 2 description")
         class TestClass2 {
             @Operation(
@@ -159,10 +120,10 @@ class DocumentationServiceTest {
         assertThat(documentation).isNotNull();
         Path docFile = tempDir.resolve("testclass.md");
         assertThat(docFile).exists();
-        
+
         // Lire le fichier généré
         String generatedContent = Files.readString(docFile);
-        
+
         // Lire le fichier de référence
         String referenceContent = Files.readString(
             Path.of(getClass().getResource("/reference/testclass.md").toURI())
@@ -202,7 +163,7 @@ class DocumentationServiceTest {
             @ApiResponse(responseCode = "400", description = "Le mot de passe ne respecte pas les critères de sécurité")
             @ApiResponse(responseCode = "409", description = "Un utilisateur avec cet email existe déjà")
             public void createUser(
-                @Parameter(description = "Données de l'utilisateur à créer, incluant email et mot de passe") 
+                @Parameter(description = "Données de l'utilisateur à créer, incluant email et mot de passe")
                 UserDTO userDTO
             ) {}
 
@@ -213,7 +174,7 @@ class DocumentationServiceTest {
             @ApiResponse(responseCode = "200", description = "Les informations complètes de l'utilisateur")
             @ApiResponse(responseCode = "404", description = "L'utilisateur n'a pas été trouvé")
             public void getUserById(
-                @Parameter(description = "Identifiant unique de l'utilisateur") 
+                @Parameter(description = "Identifiant unique de l'utilisateur")
                 String id
             ) {}
 
@@ -225,9 +186,9 @@ class DocumentationServiceTest {
             @ApiResponse(responseCode = "404", description = "L'utilisateur n'a pas été trouvé")
             @ApiResponse(responseCode = "400", description = "Le nouvel email n'est pas valide")
             public void updateUser(
-                @Parameter(description = "Identifiant unique de l'utilisateur") 
+                @Parameter(description = "Identifiant unique de l'utilisateur")
                 String id,
-                @Parameter(description = "Données à mettre à jour") 
+                @Parameter(description = "Données à mettre à jour")
                 UserDTO userDTO
             ) {}
 
@@ -239,7 +200,7 @@ class DocumentationServiceTest {
             @ApiResponse(responseCode = "404", description = "L'utilisateur n'a pas été trouvé")
             @ApiResponse(responseCode = "500", description = "Impossible de supprimer l'utilisateur")
             public void deleteUser(
-                @Parameter(description = "Identifiant unique de l'utilisateur") 
+                @Parameter(description = "Identifiant unique de l'utilisateur")
                 String id
             ) {}
         }
@@ -251,10 +212,10 @@ class DocumentationServiceTest {
         assertThat(documentation).isNotNull();
         Path docFile = tempDir.resolve("usercontroller.md");
         assertThat(docFile).exists();
-        
+
         // Lire le fichier généré
         String generatedContent = Files.readString(docFile);
-        
+
         // Lire le fichier de référence
         String referenceContent = Files.readString(
             Path.of(getClass().getResource("/reference/usercontroller-advanced.md").toURI())

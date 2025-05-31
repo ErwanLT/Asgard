@@ -4,7 +4,15 @@ Contrôleur REST pour la gestion des utilisateurs. Ce contrôleur permet de cré
 
 ## Diagramme de Classe
 
-![Diagramme UML](diagrams/usercontroller_diagram.png)
+```mermaid
+classDiagram
+class UserController {
++void createUser(UserDTO userDTO)
++void getUserById(String id)
++void updateUser(String id, UserDTO userDTO)
++void deleteUser(String id)
+}
+```
 
 ## Methods
 
