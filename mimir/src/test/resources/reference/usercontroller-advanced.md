@@ -2,10 +2,6 @@
 
 Contrôleur REST pour la gestion des utilisateurs. Ce contrôleur permet de créer, récupérer, mettre à jour et supprimer des utilisateurs.
 
-Tags: `user`, `rest`, `api`, `crud`
-
-Category: user-management
-
 ## Diagramme de Classe
 
 ![Diagramme UML](diagrams/usercontroller_diagram.png)
@@ -20,15 +16,12 @@ Crée un nouvel utilisateur dans le système. L'utilisateur doit fournir un emai
 
 - `userDTO` : Données de l'utilisateur à créer, incluant email et mot de passe
 
-#### Returns
+#### Responses
 
-L'utilisateur créé avec son identifiant unique
-
-#### Throws
-
-- `InvalidEmailException` : L'email fourni n'est pas valide
-- `InvalidPasswordException` : Le mot de passe ne respecte pas les critères de sécurité
-- `UserAlreadyExistsException` : Un utilisateur avec cet email existe déjà
+- `200` : L'utilisateur créé avec son identifiant unique
+- `400` : L'email fourni n'est pas valide
+- `400` : Le mot de passe ne respecte pas les critères de sécurité
+- `409` : Un utilisateur avec cet email existe déjà
 
 ### getUserById
 
@@ -38,13 +31,10 @@ Récupère les informations d'un utilisateur à partir de son identifiant unique
 
 - `id` : Identifiant unique de l'utilisateur
 
-#### Returns
+#### Responses
 
-Les informations complètes de l'utilisateur
-
-#### Throws
-
-- `UserNotFoundException` : L'utilisateur n'a pas été trouvé
+- `200` : Les informations complètes de l'utilisateur
+- `404` : L'utilisateur n'a pas été trouvé
 
 ### updateUser
 
@@ -55,14 +45,11 @@ Met à jour les informations d'un utilisateur existant. Seuls les champs fournis
 - `id` : Identifiant unique de l'utilisateur
 - `userDTO` : Données à mettre à jour
 
-#### Returns
+#### Responses
 
-L'utilisateur mis à jour
-
-#### Throws
-
-- `UserNotFoundException` : L'utilisateur n'a pas été trouvé
-- `InvalidEmailException` : Le nouvel email n'est pas valide
+- `200` : L'utilisateur mis à jour
+- `404` : L'utilisateur n'a pas été trouvé
+- `400` : Le nouvel email n'est pas valide
 
 ### deleteUser
 
@@ -72,11 +59,8 @@ Supprime un utilisateur du système. Cette action est irréversible et supprimer
 
 - `id` : Identifiant unique de l'utilisateur
 
-#### Returns
+#### Responses
 
-Confirmation de la suppression
-
-#### Throws
-
-- `UserNotFoundException` : L'utilisateur n'a pas été trouvé
-- `UserDeletionException` : Impossible de supprimer l'utilisateur
+- `200` : Confirmation de la suppression
+- `404` : L'utilisateur n'a pas été trouvé
+- `500` : Impossible de supprimer l'utilisateur

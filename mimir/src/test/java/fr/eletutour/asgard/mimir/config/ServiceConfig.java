@@ -20,7 +20,7 @@ public class ServiceConfig {
     @Bean
     @Primary
     public DocumentationService documentationService() {
-        return new DocumentationService(mimirProperties(), null);
+        return new DocumentationService(mimirProperties(), null, null);
     }
 
     @Bean

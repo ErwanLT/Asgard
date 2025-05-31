@@ -1,7 +1,10 @@
 package fr.eletutour.asgard.mimir.service;
 
-import fr.eletutour.asgard.mimir.annotation.ApiDescription;
 import fr.eletutour.asgard.mimir.config.MimirProperties;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,6 +38,9 @@ class DocumentationServiceTest {
     @Mock
     private UmlDiagramService umlDiagramService;
 
+    @Mock
+    private SearchService searchService;
+
     @InjectMocks
     private DocumentationService documentationService;
 
@@ -49,22 +55,14 @@ class DocumentationServiceTest {
     void shouldGenerateDocumentation() throws IOException {
         // Given
         when(mimirProperties.getOutputPath()).thenReturn(tempDir);
-        @ApiDescription(
-            value = "Test class description",
-            tags = {"test", "documentation"},
-            category = "Test"
-        )
+        @Tag(name = "Test", description = "Test class description")
         class TestClass {
-            @ApiDescription(
-                value = "Test method description",
-                returnType = "void",
-                throws_ = {
-                    @ApiDescription.Throws(
-                        exception = RuntimeException.class,
-                        description = "If something goes wrong"
-                    )
-                }
+            @Operation(
+                summary = "Test method",
+                description = "Test method description"
             )
+            @ApiResponse(responseCode = "200", description = "Success")
+            @ApiResponse(responseCode = "500", description = "Internal server error")
             public void testMethod() {}
         }
 
@@ -78,15 +76,12 @@ class DocumentationServiceTest {
         assertThat(content)
             .contains("# TestClass")
             .contains("Test class description")
-            .contains("Tags: `test`, `documentation`")
-            .contains("Category: Test")
             .contains("## Methods")
             .contains("### testMethod")
             .contains("Test method description")
-            .contains("#### Returns")
-            .contains("void")
-            .contains("#### Throws")
-            .contains("`RuntimeException` : If something goes wrong");
+            .contains("#### Responses")
+            .contains("`200` : Success")
+            .contains("`500` : Internal server error");
 
         verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
     }
@@ -95,13 +90,12 @@ class DocumentationServiceTest {
     void shouldGenerateDocumentationForClass() throws IOException, URISyntaxException {
         // Given
         when(mimirProperties.getOutputPath()).thenReturn(tempDir);
-        @ApiDescription(
-            value = "Test API description",
-            tags = {"test", "api"},
-            category = "test-category"
-        )
+        @Tag(name = "Test", description = "Test API description")
         class TestClass {
-            @ApiDescription("Test method description")
+            @Operation(
+                summary = "Test method",
+                description = "Test method description"
+            )
             public void testMethod() {}
         }
 
@@ -142,78 +136,57 @@ class DocumentationServiceTest {
     void shouldGenerateDocumentationForWellDocumentedClass() throws IOException, URISyntaxException {
         // Given
         when(mimirProperties.getOutputPath()).thenReturn(tempDir);
-        @ApiDescription(
-            value = "Contrôleur REST pour la gestion des utilisateurs. Ce contrôleur permet de créer, récupérer, mettre à jour et supprimer des utilisateurs.",
-            tags = {"user", "rest", "api", "crud"},
-            category = "user-management"
-        )
+        @Tag(name = "User", description = "Contrôleur REST pour la gestion des utilisateurs. Ce contrôleur permet de créer, récupérer, mettre à jour et supprimer des utilisateurs.")
         class UserController {
-            @ApiDescription(
-                value = "Crée un nouvel utilisateur dans le système. L'utilisateur doit fournir un email valide et un mot de passe respectant les critères de sécurité.",
-                returnType = "L'utilisateur créé avec son identifiant unique",
-                throws_ = {
-                    @ApiDescription.Throws(
-                        exception = InvalidEmailException.class,
-                        description = "L'email fourni n'est pas valide"
-                    ),
-                    @ApiDescription.Throws(
-                        exception = InvalidPasswordException.class,
-                        description = "Le mot de passe ne respecte pas les critères de sécurité"
-                    ),
-                    @ApiDescription.Throws(
-                        exception = UserAlreadyExistsException.class,
-                        description = "Un utilisateur avec cet email existe déjà"
-                    )
-                }
+            @Operation(
+                summary = "Créer un utilisateur",
+                description = "Crée un nouvel utilisateur dans le système. L'utilisateur doit fournir un email valide et un mot de passe respectant les critères de sécurité."
             )
-            public void createUser(@ApiDescription("userDTO : Données de l'utilisateur à créer, incluant email et mot de passe") UserDTO userDTO) {}
-
-            @ApiDescription(
-                value = "Récupère les informations d'un utilisateur à partir de son identifiant unique. Retourne une erreur 404 si l'utilisateur n'existe pas.",
-                returnType = "Les informations complètes de l'utilisateur",
-                throws_ = {
-                    @ApiDescription.Throws(
-                        exception = UserNotFoundException.class,
-                        description = "L'utilisateur n'a pas été trouvé"
-                    )
-                }
-            )
-            public void getUserById(@ApiDescription("id : Identifiant unique de l'utilisateur") String id) {}
-
-            @ApiDescription(
-                value = "Met à jour les informations d'un utilisateur existant. Seuls les champs fournis seront mis à jour, les autres resteront inchangés.",
-                returnType = "L'utilisateur mis à jour",
-                throws_ = {
-                    @ApiDescription.Throws(
-                        exception = UserNotFoundException.class,
-                        description = "L'utilisateur n'a pas été trouvé"
-                    ),
-                    @ApiDescription.Throws(
-                        exception = InvalidEmailException.class,
-                        description = "Le nouvel email n'est pas valide"
-                    )
-                }
-            )
-            public void updateUser(
-                @ApiDescription("id : Identifiant unique de l'utilisateur") String id,
-                @ApiDescription("userDTO : Données à mettre à jour") UserDTO userDTO
+            @ApiResponse(responseCode = "200", description = "L'utilisateur créé avec son identifiant unique")
+            @ApiResponse(responseCode = "400", description = "L'email fourni n'est pas valide")
+            @ApiResponse(responseCode = "400", description = "Le mot de passe ne respecte pas les critères de sécurité")
+            @ApiResponse(responseCode = "409", description = "Un utilisateur avec cet email existe déjà")
+            public void createUser(
+                @Parameter(description = "Données de l'utilisateur à créer, incluant email et mot de passe") 
+                UserDTO userDTO
             ) {}
 
-            @ApiDescription(
-                value = "Supprime un utilisateur du système. Cette action est irréversible et supprimera toutes les données associées à l'utilisateur.",
-                returnType = "Confirmation de la suppression",
-                throws_ = {
-                    @ApiDescription.Throws(
-                        exception = UserNotFoundException.class,
-                        description = "L'utilisateur n'a pas été trouvé"
-                    ),
-                    @ApiDescription.Throws(
-                        exception = UserDeletionException.class,
-                        description = "Impossible de supprimer l'utilisateur"
-                    )
-                }
+            @Operation(
+                summary = "Récupérer un utilisateur",
+                description = "Récupère les informations d'un utilisateur à partir de son identifiant unique. Retourne une erreur 404 si l'utilisateur n'existe pas."
             )
-            public void deleteUser(@ApiDescription("id : Identifiant unique de l'utilisateur") String id) {}
+            @ApiResponse(responseCode = "200", description = "Les informations complètes de l'utilisateur")
+            @ApiResponse(responseCode = "404", description = "L'utilisateur n'a pas été trouvé")
+            public void getUserById(
+                @Parameter(description = "Identifiant unique de l'utilisateur") 
+                String id
+            ) {}
+
+            @Operation(
+                summary = "Mettre à jour un utilisateur",
+                description = "Met à jour les informations d'un utilisateur existant. Seuls les champs fournis seront mis à jour, les autres resteront inchangés."
+            )
+            @ApiResponse(responseCode = "200", description = "L'utilisateur mis à jour")
+            @ApiResponse(responseCode = "404", description = "L'utilisateur n'a pas été trouvé")
+            @ApiResponse(responseCode = "400", description = "Le nouvel email n'est pas valide")
+            public void updateUser(
+                @Parameter(description = "Identifiant unique de l'utilisateur") 
+                String id,
+                @Parameter(description = "Données à mettre à jour") 
+                UserDTO userDTO
+            ) {}
+
+            @Operation(
+                summary = "Supprimer un utilisateur",
+                description = "Supprime un utilisateur du système. Cette action est irréversible et supprimera toutes les données associées à l'utilisateur."
+            )
+            @ApiResponse(responseCode = "200", description = "Confirmation de la suppression")
+            @ApiResponse(responseCode = "404", description = "L'utilisateur n'a pas été trouvé")
+            @ApiResponse(responseCode = "500", description = "Impossible de supprimer l'utilisateur")
+            public void deleteUser(
+                @Parameter(description = "Identifiant unique de l'utilisateur") 
+                String id
+            ) {}
         }
 
         // When
@@ -266,7 +239,10 @@ class DocumentationServiceTest {
     void shouldHandleClassWithOnlyMethodAnnotations() throws IOException {
         // Given
         class TestClass {
-            @ApiDescription("Test method description")
+            @Operation(
+                summary = "Test method",
+                description = "Test method description"
+            )
             public void testMethod() {}
         }
 
@@ -280,9 +256,4 @@ class DocumentationServiceTest {
 
     // Classes d'exception pour les tests
     private static class UserDTO {}
-    private static class InvalidEmailException extends Exception {}
-    private static class InvalidPasswordException extends Exception {}
-    private static class UserAlreadyExistsException extends Exception {}
-    private static class UserNotFoundException extends Exception {}
-    private static class UserDeletionException extends Exception {}
 } 

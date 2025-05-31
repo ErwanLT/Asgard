@@ -1,18 +1,19 @@
 package fr.eletutour.asgard.mimir.service;
 
-import fr.eletutour.asgard.mimir.annotation.ApiDescription;
 import fr.eletutour.asgard.mimir.config.MimirProperties;
 import fr.eletutour.asgard.mimir.model.Documentation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Parameter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -25,9 +26,9 @@ public class DocumentationService {
     public void generateDocumentation(Class<?> clazz) {
         log.info("Génération de la documentation pour la classe: {}", clazz.getName());
         try {
-            ApiDescription description = clazz.getAnnotation(ApiDescription.class);
-            if (description == null) {
-                log.warn("No @ApiDescription found for class: {}", clazz.getName());
+            Tag tag = clazz.getAnnotation(Tag.class);
+            if (tag == null) {
+                log.warn("No @Tag found for class: {}", clazz.getName());
                 return;
             }
 
@@ -49,31 +50,16 @@ public class DocumentationService {
         Documentation documentation = new Documentation();
         documentation.setTitle(clazz.getSimpleName());
         documentation.setContent(markdownContent);
-
         return documentation;
     }
 
     private String generateMarkdownContent(Class<?> clazz) {
-        ApiDescription description = clazz.getAnnotation(ApiDescription.class);
+        Tag tag = clazz.getAnnotation(Tag.class);
         StringBuilder content = new StringBuilder();
         
         // En-tête
         content.append("# ").append(clazz.getSimpleName()).append("\n\n");
-        content.append(description.value()).append("\n\n");
-
-        // Tags
-        if (description.tags().length > 0) {
-            content.append("Tags: ")
-                  .append(Arrays.stream(description.tags())
-                        .map(tag -> "`" + tag + "`")
-                        .collect(Collectors.joining(", ")))
-                  .append("\n\n");
-        }
-
-        // Catégorie
-        if (!description.category().isEmpty()) {
-            content.append("Category: ").append(description.category()).append("\n\n");
-        }
+        content.append(tag.description()).append("\n\n");
 
         // Diagramme UML
         content.append("## Diagramme de Classe\n\n");
@@ -86,40 +72,32 @@ public class DocumentationService {
         // Méthodes
         content.append("## Methods\n\n");
         Arrays.stream(clazz.getDeclaredMethods())
-              .filter(method -> method.isAnnotationPresent(ApiDescription.class))
+              .filter(method -> method.isAnnotationPresent(Operation.class))
               .forEach(method -> {
-                  ApiDescription methodDesc = method.getAnnotation(ApiDescription.class);
+                  Operation operation = method.getAnnotation(Operation.class);
                   content.append("### ").append(method.getName()).append("\n\n");
-                  content.append(methodDesc.value()).append("\n\n");
+                  content.append(operation.description()).append("\n\n");
                   
                   // Paramètres
                   if (method.getParameterCount() > 0) {
                       content.append("#### Parameters\n\n");
-                      for (Parameter param : method.getParameters()) {
-                          ApiDescription paramDesc = param.getAnnotation(ApiDescription.class);
-                          if (paramDesc != null) {
-                              String[] parts = paramDesc.value().split(":", 2);
-                              String paramName = parts[0].trim();
-                              String p = parts.length > 1 ? parts[1].trim() : "";
-                              content.append("- `").append(paramName).append("` : ")
-                                    .append(p).append("\n");
+                      for (java.lang.reflect.Parameter param : method.getParameters()) {
+                          Parameter parameter = param.getAnnotation(Parameter.class);
+                          if (parameter != null) {
+                              content.append("- `").append(param.getName()).append("` : ")
+                                    .append(parameter.description()).append("\n");
                           }
                       }
                       content.append("\n");
                   }
                   
-                  // Type de retour
-                  if (!methodDesc.returnType().isEmpty()) {
-                      content.append("#### Returns\n\n");
-                      content.append(methodDesc.returnType()).append("\n\n");
-                  }
-                  
-                  // Exceptions
-                  if (methodDesc.throws_().length > 0) {
-                      content.append("#### Throws\n\n");
-                      for (ApiDescription.Throws throws_ : methodDesc.throws_()) {
-                          content.append("- `").append(throws_.exception().getSimpleName())
-                                .append("` : ").append(throws_.description()).append("\n");
+                  // Réponses
+                  ApiResponse[] responses = method.getAnnotationsByType(ApiResponse.class);
+                  if (responses.length > 0) {
+                      content.append("#### Responses\n\n");
+                      for (ApiResponse response : responses) {
+                          content.append("- `").append(response.responseCode()).append("` : ")
+                                .append(response.description()).append("\n");
                       }
                       content.append("\n");
                   }
