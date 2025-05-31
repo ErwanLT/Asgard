@@ -1,6 +1,7 @@
 package fr.eletutour.asgard.mimir.controller;
 
 import fr.eletutour.asgard.mimir.annotation.ApiDescription;
+import fr.eletutour.asgard.mimir.model.Documentation;
 import fr.eletutour.asgard.mimir.service.DocumentationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,17 @@ public class MimirController {
             documentationService.generateDocumentation(clazz);
             return ResponseEntity.ok().build();
         } catch (ClassNotFoundException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @GetMapping("/documentation/{className}")
+    @ApiDescription("Récupère la documentation générée")
+    public ResponseEntity<Documentation> getDocumentation(@PathVariable("className") String className) {
+        Documentation documentation = documentationService.getDocumentation(className);
+        if (documentation != null) {
+            return ResponseEntity.ok(documentation);
+        } else {
             return ResponseEntity.notFound().build();
         }
     }

@@ -11,6 +11,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "mimir")
 public class MimirProperties {
     private Documentation documentation = new Documentation();
+    private Elasticsearch elasticsearch = new Elasticsearch();
 
     @Value("${mimir.output.path:./output}")
     private Path outputPath;
@@ -20,5 +21,11 @@ public class MimirProperties {
         private String outputDir = "docs/";
         private String format = "markdown";
         private List<String> languages = List.of("java", "kotlin");
+    }
+
+    @Data
+    public static class Elasticsearch {
+        private String host = "localhost";
+        private int port = 9200;
     }
 } 

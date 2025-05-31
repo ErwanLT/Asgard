@@ -2,6 +2,7 @@ package fr.eletutour.asgard.mimir.service;
 
 import fr.eletutour.asgard.mimir.annotation.ApiDescription;
 import fr.eletutour.asgard.mimir.config.MimirProperties;
+import fr.eletutour.asgard.mimir.model.Documentation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class DocumentationService {
     private final MimirProperties properties;
     private final UmlDiagramService umlDiagramService;
+    private final SearchService searchService;
 
     public void generateDocumentation(Class<?> clazz) {
         log.info("Génération de la documentation pour la classe: {}", clazz.getName());
@@ -33,6 +35,7 @@ public class DocumentationService {
             Path outputPath = properties.getOutputPath().resolve(clazz.getSimpleName().toLowerCase() + ".md");
             Files.writeString(outputPath, markdownContent);
             log.info("Documentation générée avec succès dans: {}", outputPath);
+            searchService.saveDocumentation(createDocumentation(clazz, markdownContent));
 
             // Génération du diagramme UML
             umlDiagramService.generateClassDiagram(clazz);
@@ -40,6 +43,14 @@ public class DocumentationService {
             log.error("Erreur lors de la génération de la documentation", e);
             throw new RuntimeException("Erreur lors de la génération de la documentation", e);
         }
+    }
+
+    private Documentation createDocumentation(Class<?> clazz, String markdownContent) {
+        Documentation documentation = new Documentation();
+        documentation.setTitle(clazz.getSimpleName());
+        documentation.setContent(markdownContent);
+
+        return documentation;
     }
 
     private String generateMarkdownContent(Class<?> clazz) {
@@ -116,4 +127,8 @@ public class DocumentationService {
 
         return content.toString();
     }
-} 
+
+    public Documentation getDocumentation(String className) {
+        return searchService.findDocumentationByTitle(className);
+    }
+}
