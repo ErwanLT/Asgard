@@ -4,7 +4,17 @@ API de gestion des auteurs
 
 ## Diagramme de Classe
 
-![Diagramme UML](diagrams/authorcontroller_diagram.png)
+```mermaid
+classDiagram
+    class AuthorController {
+        -Logger log
+        -AuthorService authorService
+        +ResponseEntity getAuthors()
+        +Author getAuthorById(Long arg0)
+    }
+    AuthorController --> Logger : log
+    AuthorController --> AuthorService : authorService
+```
 
 ## Methods
 

@@ -9,23 +9,14 @@ classDiagram
     class ArticleController {
         -Logger log
         -ArticleService articleService
-        +List getArticles()
         +ResponseEntity getArticleByIdAvecTimeout(Long arg0)
+        +List getArticles()
     }
     ArticleController --> Logger : log
     ArticleController --> ArticleService : articleService
 ```
 
 ## Methods
-
-### getArticles
-
-
-
-#### Responses
-
-- `200` : Liste des articles récupérée avec succès
-- `500` : Erreur interne du serveur
 
 ### getArticleByIdAvecTimeout
 
@@ -40,5 +31,14 @@ classDiagram
 - `200` : Article trouvé
 - `404` : Article non trouvé
 - `408` : Délai d'attente dépassé
+- `500` : Erreur interne du serveur
+
+### getArticles
+
+
+
+#### Responses
+
+- `200` : Liste des articles récupérée avec succès
 - `500` : Erreur interne du serveur
 
