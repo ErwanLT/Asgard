@@ -2,6 +2,7 @@ package fr.eletutour.asgard.mimir.service;
 
 import fr.eletutour.asgard.mimir.config.MimirProperties;
 import fr.eletutour.asgard.mimir.model.Documentation;
+import fr.eletutour.asgard.mimir.util.ClassFinder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,7 +14,9 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -23,27 +26,50 @@ public class DocumentationService {
     private final UmlDiagramService umlDiagramService;
     private final SearchService searchService;
 
-    public void generateDocumentation(Class<?> clazz) {
+    public Documentation generateDocumentation(Class<?> clazz) {
         log.info("Génération de la documentation pour la classe: {}", clazz.getName());
         try {
             Tag tag = clazz.getAnnotation(Tag.class);
             if (tag == null) {
                 log.warn("No @Tag found for class: {}", clazz.getName());
-                return;
+                return null;
             }
 
             String markdownContent = generateMarkdownContent(clazz);
             Path outputPath = properties.getOutputPath().resolve(clazz.getSimpleName().toLowerCase() + ".md");
             Files.writeString(outputPath, markdownContent);
             log.info("Documentation générée avec succès dans: {}", outputPath);
-            searchService.saveDocumentation(createDocumentation(clazz, markdownContent));
+            
+            Documentation documentation = createDocumentation(clazz, markdownContent);
+            searchService.saveDocumentation(documentation);
 
             // Génération du diagramme UML
             umlDiagramService.generateClassDiagram(clazz);
+            
+            return documentation;
         } catch (IOException e) {
             log.error("Erreur lors de la génération de la documentation", e);
             throw new RuntimeException("Erreur lors de la génération de la documentation", e);
         }
+    }
+
+    public List<Documentation> generatePackageDocumentation(String packageName) throws ClassNotFoundException {
+        log.info("Génération de la documentation pour le package: {}", packageName);
+        List<Documentation> documentations = new ArrayList<>();
+        
+        // Récupérer toutes les classes du package
+        List<Class<?>> classes = ClassFinder.findClassesInPackage(packageName);
+        log.info("{} classes trouvées dans le package {}", classes.size(), packageName);
+        
+        // Générer la documentation pour chaque classe
+        for (Class<?> clazz : classes) {
+            Documentation documentation = generateDocumentation(clazz);
+            if (documentation != null) {
+                documentations.add(documentation);
+            }
+        }
+        
+        return documentations;
     }
 
     private Documentation createDocumentation(Class<?> clazz, String markdownContent) {

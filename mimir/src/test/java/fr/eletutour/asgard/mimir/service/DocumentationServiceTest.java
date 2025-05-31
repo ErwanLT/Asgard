@@ -1,6 +1,8 @@
 package fr.eletutour.asgard.mimir.service;
 
 import fr.eletutour.asgard.mimir.config.MimirProperties;
+import fr.eletutour.asgard.mimir.model.Documentation;
+import fr.eletutour.asgard.mimir.util.ClassFinder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -26,8 +29,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class DocumentationServiceTest {
@@ -67,9 +69,12 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateDocumentation(TestClass.class);
+        Documentation documentation = documentationService.generateDocumentation(TestClass.class);
 
         // Then
+        assertThat(documentation).isNotNull();
+        assertThat(documentation.getTitle()).isEqualTo("TestClass");
+        
         Path expectedFile = tempDir.resolve("testclass.md");
         assertThat(expectedFile).exists();
         String content = Files.readString(expectedFile);
@@ -84,6 +89,54 @@ class DocumentationServiceTest {
             .contains("`500` : Internal server error");
 
         verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
+        verify(searchService).saveDocumentation(documentation);
+    }
+
+    @Test
+    void shouldGeneratePackageDocumentation() throws IOException, ClassNotFoundException {
+        // Given
+        when(mimirProperties.getOutputPath()).thenReturn(tempDir);
+        
+        @Tag(name = "Test1", description = "Test class 1 description")
+        class TestClass1 {
+            @Operation(
+                summary = "Test method 1",
+                description = "Test method 1 description"
+            )
+            public void testMethod1() {}
+        }
+        
+        @Tag(name = "Test2", description = "Test class 2 description")
+        class TestClass2 {
+            @Operation(
+                summary = "Test method 2",
+                description = "Test method 2 description"
+            )
+            public void testMethod2() {}
+        }
+
+        try (MockedStatic<ClassFinder> classFinderMock = mockStatic(ClassFinder.class)) {
+            classFinderMock.when(() -> ClassFinder.findClassesInPackage("test.package"))
+                .thenReturn(Arrays.asList(TestClass1.class, TestClass2.class));
+
+            // When
+            List<Documentation> documentations = documentationService.generatePackageDocumentation("test.package");
+
+            // Then
+            assertThat(documentations).hasSize(2);
+            assertThat(documentations)
+                .extracting(Documentation::getTitle)
+                .containsExactlyInAnyOrder("TestClass1", "TestClass2");
+
+            Path expectedFile1 = tempDir.resolve("testclass1.md");
+            Path expectedFile2 = tempDir.resolve("testclass2.md");
+            assertThat(expectedFile1).exists();
+            assertThat(expectedFile2).exists();
+
+            verify(umlDiagramService).generateClassDiagram(eq(TestClass1.class));
+            verify(umlDiagramService).generateClassDiagram(eq(TestClass2.class));
+            verify(searchService, times(2)).saveDocumentation(any(Documentation.class));
+        }
     }
 
     @Test
@@ -100,9 +153,10 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateDocumentation(TestClass.class);
+        Documentation documentation = documentationService.generateDocumentation(TestClass.class);
 
         // Then
+        assertThat(documentation).isNotNull();
         Path docFile = tempDir.resolve("testclass.md");
         assertThat(docFile).exists();
         
@@ -130,6 +184,7 @@ class DocumentationServiceTest {
             .isEqualTo(normalizedReference);
 
         verify(umlDiagramService).generateClassDiagram(eq(TestClass.class));
+        verify(searchService).saveDocumentation(documentation);
     }
 
     @Test
@@ -190,9 +245,10 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateDocumentation(UserController.class);
+        Documentation documentation = documentationService.generateDocumentation(UserController.class);
 
         // Then
+        assertThat(documentation).isNotNull();
         Path docFile = tempDir.resolve("usercontroller.md");
         assertThat(docFile).exists();
         
@@ -218,6 +274,9 @@ class DocumentationServiceTest {
         assertThat(normalizedGenerated)
             .as("Le contenu généré devrait correspondre au fichier de référence pour une classe bien documentée")
             .isEqualTo(normalizedReference);
+
+        verify(umlDiagramService).generateClassDiagram(eq(UserController.class));
+        verify(searchService).saveDocumentation(documentation);
     }
 
     @Test
@@ -228,11 +287,13 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateDocumentation(TestClass.class);
+        Documentation documentation = documentationService.generateDocumentation(TestClass.class);
 
         // Then
+        assertThat(documentation).isNull();
         Path docFile = tempDir.resolve("testclass.md");
         assertThat(docFile).doesNotExist();
+        verifyNoInteractions(umlDiagramService, searchService);
     }
 
     @Test
@@ -247,11 +308,13 @@ class DocumentationServiceTest {
         }
 
         // When
-        documentationService.generateDocumentation(TestClass.class);
+        Documentation documentation = documentationService.generateDocumentation(TestClass.class);
 
         // Then
+        assertThat(documentation).isNull();
         Path docFile = tempDir.resolve("testclass.md");
         assertThat(docFile).doesNotExist();
+        verifyNoInteractions(umlDiagramService, searchService);
     }
 
     // Classes d'exception pour les tests

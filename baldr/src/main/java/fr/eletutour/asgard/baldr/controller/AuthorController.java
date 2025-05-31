@@ -3,7 +3,6 @@ package fr.eletutour.asgard.baldr.controller;
 import fr.eletutour.asgard.baldr.exception.AuthorNotFoundException;
 import fr.eletutour.asgard.baldr.model.Author;
 import fr.eletutour.asgard.baldr.service.AuthorService;
-import fr.eletutour.asgard.mimir.annotation.ApiDescription;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,11 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/authors")
 @Tag(name = "Authors", description = "API de gestion des auteurs")
-@ApiDescription(
-        value = "API de gestion des auteurs",
-        tags = {"authors", "api"},
-        category = "api"
-)
 public class AuthorController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthorController.class);
@@ -48,19 +42,6 @@ public class AuthorController {
         @ApiResponse(responseCode = "404", description = "Auteurs non trouvés"),
         @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
-    @ApiDescription(
-            value = "Récupère la liste de tous les auteurs",
-            tags = {"authors", "get"},
-            category = "api",
-            order = 1,
-            returnType = "ResponseEntity<List<Author>>",
-            throws_ = {
-                @ApiDescription.Throws(
-                    exception = Exception.class,
-                    description = "Erreur lors de la récupération des auteurs"
-                )
-            }
-    )
     @GetMapping
     public ResponseEntity<?> getAuthors() {
         try {
@@ -80,23 +61,9 @@ public class AuthorController {
         @ApiResponse(responseCode = "404", description = "Auteur non trouvé"),
         @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
-    @ApiDescription(
-            value = "Récupère un auteur par son ID",
-            tags = {"authors", "get"},
-            category = "api",
-            order = 2,
-            returnType = "Author",
-            throws_ = {
-                @ApiDescription.Throws(
-                    exception = AuthorNotFoundException.class,
-                    description = "L'auteur n'a pas été trouvé"
-                )
-            }
-    )
     @GetMapping("/{id}")
     public Author getAuthorById(@Parameter(name = "id", description = "ID de l'auteur à récupérer")
-                                    @PathVariable("id")
-                                    @ApiDescription("id : id de l'auteur recherché") Long id) throws AuthorNotFoundException {
+                                    @PathVariable("id") Long id) throws AuthorNotFoundException {
         return authorService.getAuthorById(id);
     }
 }
