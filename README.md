@@ -7,6 +7,9 @@ Asgard est une suite d'outils et de bibliothèques pour le développement Spring
 
 ## Modules
 
+### Odin
+Framework qui implémente les patterns de conception classiques en utilisant la réflexion (reflection) pour offrir une approche plus flexible et dynamique. [Documentation](odin/README.md)
+
 ### Heimdall
 Module de logging avancé pour Spring Boot. [Documentation](heimdall/README.md)
 
@@ -29,6 +32,12 @@ Module de gestion de l'arrêt contrôlé des applications Spring Boot. [Document
 Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante dans votre `pom.xml` :
 
 ```xml
+<dependency>
+    <groupId>fr.eletutour.asgard</groupId>
+    <artifactId>odin</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+
 <dependency>
     <groupId>fr.eletutour.asgard</groupId>
     <artifactId>heimdall</artifactId>
@@ -58,10 +67,11 @@ Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante
 
 ```
 asgard/
-├── heimdall/         # Module de logging
-├── mimir/            # Module de documentation
-├── baldr/            # Module de test d'intégration
-├── hel/              # Module de gestion de l'arrêt
+├── odin/            # Framework de patterns de conception
+├── heimdall/        # Module de logging
+├── mimir/           # Module de documentation
+├── baldr/           # Module de test d'intégration
+├── hel/             # Module de gestion de l'arrêt
 └── pom.xml          # POM parent
 ```
 
