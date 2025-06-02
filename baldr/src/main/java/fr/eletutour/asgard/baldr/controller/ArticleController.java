@@ -47,7 +47,7 @@ public class ArticleController {
     })
     @GetMapping
     public List<Article> getArticles() {
-        return articleService.getArticles();
+        return articleService.getAllArticles();
     }
 
     @Operation(summary = "Récupérer un article par ID avec timeout")

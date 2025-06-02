@@ -5,10 +5,13 @@ import fr.eletutour.asgard.baldr.exception.ArticleNotFoundException;
 import fr.eletutour.asgard.baldr.exception.AuthorNotFoundException;
 import fr.eletutour.asgard.baldr.model.Article;
 import fr.eletutour.asgard.baldr.model.Author;
+import fr.eletutour.asgard.baldr.util.ObjectManager;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Service gérant les opérations liées aux articles.
@@ -35,7 +38,8 @@ public class ArticleService {
      *
      * @return La liste de tous les articles.
      */
-    public List<Article> getArticles() {
+    @Transactional(readOnly = true)
+    public List<Article> getAllArticles() {
         return articleRepository.findAll();
     }
 
@@ -46,6 +50,7 @@ public class ArticleService {
      * @return L'article correspondant à l'identifiant.
      * @throws ArticleNotFoundException Si aucun article n'est trouvé avec l'identifiant spécifié.
      */
+    @Transactional(readOnly = true)
     public Article getArticleById(Long id) throws ArticleNotFoundException {
         return articleRepository.findById(id).orElseThrow( () -> new ArticleNotFoundException("Article non trouvé pour l'id : " + id, id));
     }
@@ -59,18 +64,49 @@ public class ArticleService {
      * @return L'article créé.
      * @throws AuthorNotFoundException Si aucun auteur n'est trouvé avec l'identifiant spécifié.
      */
+    @Transactional
     public Article createArticle(String title, String content, Long authorId) throws AuthorNotFoundException {
         Author author = authorService.getAuthorById(authorId);
-        Article article = new Article();
+        Article article = ObjectManager.borrowArticle();
         article.setTitle(title);
         article.setContent(content);
         article.setAuthor(author);
-        return articleRepository.save(article);
+
+        Article savedArticle = articleRepository.save(article);
+
+        ObjectManager.releaseArticle(article);
+
+        return savedArticle;
     }
 
     @PostConstruct
     private void init() throws AuthorNotFoundException {
         createArticle("Harry Potter", "Harry Potter is a series of seven fantasy novels written by British author J. K. Rowling.", 1L);
         createArticle("The Shining", "The Shining is a horror novel by American author Stephen King.", 2L);
+    }
+
+    @Transactional
+    public Article updateArticle(Long id, String title, String content) {
+        return articleRepository.findById(id)
+            .map(article -> {
+                Article updatedArticle = ObjectManager.cloneArticle(article);
+                updatedArticle.setTitle(title);
+                updatedArticle.setContent(content);
+                return articleRepository.save(updatedArticle);
+            })
+            .orElseThrow(() -> new RuntimeException("Article non trouvé"));
+    }
+
+    @Transactional
+    public void deleteArticle(Long id) {
+        articleRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Article cloneArticle(Long id) {
+        return articleRepository.findById(id)
+            .map(ObjectManager::cloneArticle)
+            .map(articleRepository::save)
+            .orElseThrow(() -> new RuntimeException("Article non trouvé"));
     }
 }

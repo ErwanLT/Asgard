@@ -45,7 +45,7 @@ public class AuthorController {
     @GetMapping
     public ResponseEntity<?> getAuthors() {
         try {
-            List<Author> authors = authorService.getAuthors();
+            List<Author> authors = authorService.getAllAuthors();
             return ResponseEntity.ok(authors);
         } catch (Exception e) {
             log.error("Unexpected error retrieving authors", e);
