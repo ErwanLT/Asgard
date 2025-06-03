@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -93,47 +92,7 @@ public class DocumentationService {
         // Diagramme de classe avec Mermaid
         content.append("## Diagramme de Classe\n\n");
         content.append("```mermaid\n");
-        content.append("classDiagram\n");
-        
-        // Ajouter la classe principale
-        content.append("    class ").append(clazz.getSimpleName()).append(" {\n");
-        
-        // Ajouter les champs
-        Arrays.stream(clazz.getDeclaredFields())
-              .forEach(field -> {
-                  String visibility = Modifier.isPrivate(field.getModifiers()) ? "-" : "+";
-                  content.append("        ").append(visibility)
-                        .append(field.getType().getSimpleName())
-                        .append(" ")
-                        .append(field.getName())
-                        .append("\n");
-              });
-        
-        // Ajouter les méthodes publiques
-        Arrays.stream(clazz.getDeclaredMethods())
-              .filter(method -> Modifier.isPublic(method.getModifiers()))
-              .forEach(method -> {
-                  String methodName = method.getName();
-                  String returnType = method.getReturnType().getSimpleName();
-                  String parameters = Arrays.stream(method.getParameters())
-                      .map(param -> param.getType().getSimpleName() + " " + param.getName())
-                      .collect(Collectors.joining(", "));
-                  
-                  content.append("        +").append(returnType).append(" ").append(methodName)
-                        .append("(").append(parameters).append(")\n");
-              });
-        
-        content.append("    }\n");
-        
-        // Ajouter les relations avec les autres classes
-        Arrays.stream(clazz.getDeclaredFields())
-              .filter(field -> !field.getType().isPrimitive() && !field.getType().getName().startsWith("java.lang"))
-              .forEach(field -> {
-                  content.append("    ").append(clazz.getSimpleName())
-                        .append(" --> ").append(field.getType().getSimpleName())
-                        .append(" : ").append(field.getName()).append("\n");
-              });
-        
+        content.append(umlDiagramService.generateClassDiagram(clazz));
         content.append("```\n\n");
 
         // Méthodes
@@ -151,7 +110,7 @@ public class DocumentationService {
                       for (java.lang.reflect.Parameter param : method.getParameters()) {
                           Parameter parameter = param.getAnnotation(Parameter.class);
                           if (parameter != null) {
-                              content.append("- `").append(param.getName()).append("` : ")
+                              content.append("- `").append(parameter.name()).append("` : ")
                                     .append(parameter.description()).append("\n");
                           }
                       }

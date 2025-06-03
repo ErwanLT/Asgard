@@ -32,8 +32,8 @@ public class MimirAutoConfiguration extends ElasticsearchConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public UmlDiagramService umlDiagramService(MimirProperties properties) {
-        return new UmlDiagramService(properties);
+    public UmlDiagramService umlDiagramService() {
+        return new UmlDiagramService();
     }
 
     @Bean

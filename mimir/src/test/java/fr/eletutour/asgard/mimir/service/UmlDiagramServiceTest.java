@@ -1,111 +1,102 @@
 package fr.eletutour.asgard.mimir.service;
 
-import fr.eletutour.asgard.mimir.config.MimirProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UmlDiagramServiceTest {
 
-    @TempDir
-    Path tempDir;
-
     private UmlDiagramService umlDiagramService;
-    private MimirProperties properties;
 
     @BeforeEach
     void setUp() {
-        properties = new MimirProperties();
-        properties.getDocumentation().setOutputDir(tempDir.toString());
-        umlDiagramService = new UmlDiagramService(properties);
+        umlDiagramService = new UmlDiagramService();
     }
 
     @Test
-    void shouldGenerateClassDiagram() throws IOException {
-        // Given
+    void generateClassDiagram_ShouldGenerateValidMermaidDiagram() {
+        // Arrange
         class TestClass {
-            private String field1;
-            protected int field2;
-            public boolean field3;
+            private String privateField;
+            protected int protectedField;
+            public boolean publicField;
             
-            public void method1() {}
-            private String method2(int param) { return null; }
+            private void privateMethod() {}
+            protected void protectedMethod() {}
+            public void publicMethod() {}
         }
 
-        // When
-        umlDiagramService.generateClassDiagram(TestClass.class);
+        // Act
+        String diagram = umlDiagramService.generateClassDiagram(TestClass.class);
 
-        // Then
-        Path diagramFile = tempDir.resolve("diagrams/testclass_diagram.png");
-        assertThat(diagramFile).exists();
-        assertThat(Files.size(diagramFile)).isGreaterThan(0);
+        // Assert
+        assertNotNull(diagram);
+        assertTrue(diagram.contains("classDiagram"));
+        assertTrue(diagram.contains("class TestClass"));
+        assertTrue(diagram.contains("-String privateField"));
+        assertTrue(diagram.contains("#int protectedField"));
+        assertTrue(diagram.contains("+boolean publicField"));
+        assertTrue(diagram.contains("-void privateMethod()"));
+        assertTrue(diagram.contains("#void protectedMethod()"));
+        assertTrue(diagram.contains("+void publicMethod()"));
     }
 
     @Test
-    void shouldGenerateDiagramWithInheritance() throws IOException {
-        // Given
-        class ParentClass {
-            public void parentMethod() {}
-        }
-        
-        class ChildClass extends ParentClass {
-            private String childField;
-            public void childMethod() {}
-        }
+    void generateClassDiagram_ShouldHandleInheritance() {
+        // Arrange
+        class ParentClass {}
+        class ChildClass extends ParentClass {}
 
-        // When
-        umlDiagramService.generateClassDiagram(ChildClass.class);
+        // Act
+        String diagram = umlDiagramService.generateClassDiagram(ChildClass.class);
 
-        // Then
-        Path diagramFile = tempDir.resolve("diagrams/childclass_diagram.png");
-        assertThat(diagramFile).exists();
-        assertThat(Files.size(diagramFile)).isGreaterThan(0);
+        // Assert
+        assertNotNull(diagram);
+        assertTrue(diagram.contains("ChildClass --|> ParentClass"));
     }
 
     @Test
-    void shouldGenerateDiagramWithInterfaces() throws IOException {
-        // Given
-        interface TestInterface {
-            void interfaceMethod();
-        }
-        
-        class TestClass implements TestInterface {
-            public void interfaceMethod() {}
-        }
+    void generateClassDiagram_ShouldHandleInterfaces() {
+        // Arrange
+        interface TestInterface {}
+        class TestClass implements TestInterface {}
 
-        // When
-        umlDiagramService.generateClassDiagram(TestClass.class);
+        // Act
+        String diagram = umlDiagramService.generateClassDiagram(TestClass.class);
 
-        // Then
-        Path diagramFile = tempDir.resolve("diagrams/testclass_diagram.png");
-        assertThat(diagramFile).exists();
-        assertThat(Files.size(diagramFile)).isGreaterThan(0);
+        // Assert
+        assertNotNull(diagram);
+        assertTrue(diagram.contains("TestClass ..|> TestInterface"));
     }
 
     @Test
-    void shouldGenerateDiagramWithAssociations() throws IOException {
-        // Given
-        class AssociatedClass {
-            private String field;
-        }
-        
+    void generateClassDiagram_ShouldHandleAssociations() {
+        // Arrange
+        class AssociatedClass {}
         class TestClass {
-            private AssociatedClass association;
-            private String simpleField;
+            private AssociatedClass associatedField;
         }
 
-        // When
-        umlDiagramService.generateClassDiagram(TestClass.class);
+        // Act
+        String diagram = umlDiagramService.generateClassDiagram(TestClass.class);
 
-        // Then
-        Path diagramFile = tempDir.resolve("diagrams/testclass_diagram.png");
-        assertThat(diagramFile).exists();
-        assertThat(Files.size(diagramFile)).isGreaterThan(0);
+        // Assert
+        assertNotNull(diagram);
+        assertTrue(diagram.contains("TestClass --> AssociatedClass"));
+    }
+
+    @Test
+    void generateClassDiagram_ShouldHandleMethodParameters() {
+        // Arrange
+        class TestClass {
+            public void testMethod(String param1, int param2) {}
+        }
+
+        // Act
+        String diagram = umlDiagramService.generateClassDiagram(TestClass.class);
+
+        // Assert
+        assertNotNull(diagram);
+        assertTrue(diagram.contains("+void testMethod(String param1, int param2)"));
     }
 } 
