@@ -14,16 +14,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/authors")
-@Tag(name = "Authors", description = "API de gestion des auteurs")
+@Tag(name = "Authors", description = """
+    API de gestion des auteurs permettant de :
+    - Lister tous les auteurs
+    - Récupérer un auteur par son ID
+    - Créer un nouvel auteur
+    - Mettre à jour les informations d'un auteur
+    - Supprimer un auteur
+    - Cloner un auteur existant
+    
+    Chaque auteur possède un nom, une biographie et peut être associé à plusieurs articles.
+    """)
 public class AuthorController {
 
     private static final Logger log = LoggerFactory.getLogger(AuthorController.class);
@@ -65,5 +72,66 @@ public class AuthorController {
     public Author getAuthorById(@Parameter(name = "id", description = "ID de l'auteur à récupérer")
                                     @PathVariable("id") Long id) throws AuthorNotFoundException {
         return authorService.getAuthorById(id);
+    }
+
+    @Operation(summary = "Créer un nouvel auteur")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Auteur créé avec succès",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = Author.class))),
+        @ApiResponse(responseCode = "400", description = "Données invalides"),
+        @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @PostMapping
+    public ResponseEntity<Author> createAuthor(
+            @Parameter(name = "name", description = "Nom de l'auteur") @RequestParam String name,
+            @Parameter(name = "bio", description = "Biographie de l'auteur") @RequestParam String bio) {
+        Author author = authorService.createAuthor(name, bio);
+        return ResponseEntity.status(HttpStatus.CREATED).body(author);
+    }
+
+    @Operation(summary = "Mettre à jour un auteur")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Auteur mis à jour avec succès",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = Author.class))),
+        @ApiResponse(responseCode = "404", description = "Auteur non trouvé"),
+        @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @PutMapping("/{id}")
+    public ResponseEntity<Author> updateAuthor(
+            @Parameter(name = "id", description = "ID de l'auteur à mettre à jour") @PathVariable Long id,
+            @Parameter(name = "name", description = "Nouveau nom de l'auteur") @RequestParam String name,
+            @Parameter(name = "bio", description = "Nouvelle biographie de l'auteur") @RequestParam String bio) {
+        Author author = authorService.updateAuthor(id, name, bio);
+        return ResponseEntity.ok(author);
+    }
+
+    @Operation(summary = "Supprimer un auteur")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "204", description = "Auteur supprimé avec succès"),
+        @ApiResponse(responseCode = "404", description = "Auteur non trouvé"),
+        @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAuthor(
+            @Parameter(name = "id", description = "ID de l'auteur à supprimer") @PathVariable Long id) {
+        authorService.deleteAuthor(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Operation(summary = "Cloner un auteur")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "201", description = "Auteur cloné avec succès",
+                     content = @Content(mediaType = "application/json",
+                                        schema = @Schema(implementation = Author.class))),
+        @ApiResponse(responseCode = "404", description = "Auteur non trouvé"),
+        @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
+    })
+    @PostMapping("/{id}/clone")
+    public ResponseEntity<Author> cloneAuthor(
+            @Parameter(name = "id", description = "ID de l'auteur à cloner") @PathVariable Long id) {
+        Author clonedAuthor = authorService.cloneAuthor(id);
+        return ResponseEntity.status(HttpStatus.CREATED).body(clonedAuthor);
     }
 }
