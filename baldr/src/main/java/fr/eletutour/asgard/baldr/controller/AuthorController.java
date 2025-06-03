@@ -41,7 +41,10 @@ public class AuthorController {
         this.authorService = authorService;
     }
 
-    @Operation(summary = "Récupérer tous les auteurs")
+    @Operation(
+        summary = "Récupérer tous les auteurs",
+        description = "Récupère la liste complète des auteurs disponibles dans le système. Retourne une liste vide si aucun auteur n'est trouvé."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Liste des auteurs récupérée avec succès",
                      content = @Content(mediaType = "application/json",
@@ -60,7 +63,10 @@ public class AuthorController {
         }
     }
 
-    @Operation(summary = "Récupérer un auteur par ID")
+    @Operation(
+        summary = "Récupérer un auteur par ID",
+        description = "Récupère les informations détaillées d'un auteur spécifique en utilisant son identifiant unique. Inclut son nom, sa biographie et la liste de ses articles."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Auteur trouvé",
                      content = @Content(mediaType = "application/json",
@@ -74,7 +80,10 @@ public class AuthorController {
         return authorService.getAuthorById(id);
     }
 
-    @Operation(summary = "Créer un nouvel auteur")
+    @Operation(
+        summary = "Créer un nouvel auteur",
+        description = "Crée un nouvel auteur dans le système avec les informations fournies. L'auteur sera immédiatement disponible pour être associé à des articles."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Auteur créé avec succès",
                      content = @Content(mediaType = "application/json",
@@ -90,7 +99,10 @@ public class AuthorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(author);
     }
 
-    @Operation(summary = "Mettre à jour un auteur")
+    @Operation(
+        summary = "Mettre à jour un auteur",
+        description = "Met à jour les informations d'un auteur existant. Toutes les modifications sont appliquées immédiatement et affectent tous les articles associés."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Auteur mis à jour avec succès",
                      content = @Content(mediaType = "application/json",
@@ -107,7 +119,10 @@ public class AuthorController {
         return ResponseEntity.ok(author);
     }
 
-    @Operation(summary = "Supprimer un auteur")
+    @Operation(
+        summary = "Supprimer un auteur",
+        description = "Supprime définitivement un auteur du système. Cette action supprime également tous les articles associés à cet auteur."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Auteur supprimé avec succès"),
         @ApiResponse(responseCode = "404", description = "Auteur non trouvé"),
@@ -120,7 +135,10 @@ public class AuthorController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Cloner un auteur")
+    @Operation(
+        summary = "Cloner un auteur",
+        description = "Crée une copie exacte d'un auteur existant. Le clone aura les mêmes informations que l'auteur original mais un nouvel ID unique."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Auteur cloné avec succès",
                      content = @Content(mediaType = "application/json",

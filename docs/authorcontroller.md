@@ -34,7 +34,9 @@ classDiagram
 
 ### getAuthorById
 
+**Résumé :** Récupérer un auteur par ID
 
+**Description :** Récupère les informations détaillées d'un auteur spécifique en utilisant son identifiant unique. Inclut son nom, sa biographie et la liste de ses articles.
 
 #### Parameters
 
@@ -48,7 +50,9 @@ classDiagram
 
 ### createAuthor
 
+**Résumé :** Créer un nouvel auteur
 
+**Description :** Crée un nouvel auteur dans le système avec les informations fournies. L'auteur sera immédiatement disponible pour être associé à des articles.
 
 #### Parameters
 
@@ -63,7 +67,9 @@ classDiagram
 
 ### updateAuthor
 
+**Résumé :** Mettre à jour un auteur
 
+**Description :** Met à jour les informations d'un auteur existant. Toutes les modifications sont appliquées immédiatement et affectent tous les articles associés.
 
 #### Parameters
 
@@ -79,7 +85,9 @@ classDiagram
 
 ### deleteAuthor
 
+**Résumé :** Supprimer un auteur
 
+**Description :** Supprime définitivement un auteur du système. Cette action supprime également tous les articles associés à cet auteur.
 
 #### Parameters
 
@@ -93,7 +101,9 @@ classDiagram
 
 ### cloneAuthor
 
+**Résumé :** Cloner un auteur
 
+**Description :** Crée une copie exacte d'un auteur existant. Le clone aura les mêmes informations que l'auteur original mais un nouvel ID unique.
 
 #### Parameters
 
@@ -107,7 +117,9 @@ classDiagram
 
 ### getAuthors
 
+**Résumé :** Récupérer tous les auteurs
 
+**Description :** Récupère la liste complète des auteurs disponibles dans le système. Retourne une liste vide si aucun auteur n'est trouvé.
 
 #### Responses
 

@@ -48,7 +48,10 @@ public class ArticleController {
         this.articleService = articleService;
     }
 
-    @Operation(summary = "Récupérer tous les articles")
+    @Operation(
+        summary = "Récupérer tous les articles",
+        description = "Récupère la liste complète des articles disponibles dans le système. Les articles sont retournés avec leurs informations détaillées et les références à leurs auteurs."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Liste des articles récupérée avec succès",
                      content = @Content(mediaType = "application/json",
@@ -60,7 +63,10 @@ public class ArticleController {
         return articleService.getAllArticles();
     }
 
-    @Operation(summary = "Récupérer un article par ID avec timeout")
+    @Operation(
+        summary = "Récupérer un article par ID avec timeout",
+        description = "Récupère les informations détaillées d'un article spécifique en utilisant son identifiant unique. L'opération est limitée à 2 secondes pour garantir la réactivité du système."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Article trouvé",
                      content = @Content(mediaType = "application/json",
@@ -83,7 +89,10 @@ public class ArticleController {
         }
     }
 
-    @Operation(summary = "Créer un nouvel article")
+    @Operation(
+        summary = "Créer un nouvel article",
+        description = "Crée un nouvel article dans le système et l'associe à un auteur existant. L'article sera immédiatement disponible pour consultation."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Article créé avec succès",
                      content = @Content(mediaType = "application/json",
@@ -101,7 +110,10 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(article);
     }
 
-    @Operation(summary = "Mettre à jour un article")
+    @Operation(
+        summary = "Mettre à jour un article",
+        description = "Met à jour le contenu d'un article existant. Les modifications sont appliquées immédiatement et conservent la référence à l'auteur original."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Article mis à jour avec succès",
                      content = @Content(mediaType = "application/json",
@@ -118,7 +130,10 @@ public class ArticleController {
         return ResponseEntity.ok(article);
     }
 
-    @Operation(summary = "Supprimer un article")
+    @Operation(
+        summary = "Supprimer un article",
+        description = "Supprime définitivement un article du système. Cette action ne supprime pas l'auteur associé à l'article."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "204", description = "Article supprimé avec succès"),
         @ApiResponse(responseCode = "404", description = "Article non trouvé"),
@@ -131,7 +146,10 @@ public class ArticleController {
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(summary = "Cloner un article")
+    @Operation(
+        summary = "Cloner un article",
+        description = "Crée une copie exacte d'un article existant. Le clone aura le même contenu et le même auteur que l'article original mais un nouvel ID unique."
+    )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201", description = "Article cloné avec succès",
                      content = @Content(mediaType = "application/json",

@@ -35,7 +35,9 @@ classDiagram
 
 ### getArticleByIdAvecTimeout
 
+**Résumé :** Récupérer un article par ID avec timeout
 
+**Description :** Récupère les informations détaillées d'un article spécifique en utilisant son identifiant unique. L'opération est limitée à 2 secondes pour garantir la réactivité du système.
 
 #### Parameters
 
@@ -50,7 +52,9 @@ classDiagram
 
 ### createArticle
 
+**Résumé :** Créer un nouvel article
 
+**Description :** Crée un nouvel article dans le système et l'associe à un auteur existant. L'article sera immédiatement disponible pour consultation.
 
 #### Parameters
 
@@ -67,7 +71,9 @@ classDiagram
 
 ### updateArticle
 
+**Résumé :** Mettre à jour un article
 
+**Description :** Met à jour le contenu d'un article existant. Les modifications sont appliquées immédiatement et conservent la référence à l'auteur original.
 
 #### Parameters
 
@@ -83,7 +89,9 @@ classDiagram
 
 ### deleteArticle
 
+**Résumé :** Supprimer un article
 
+**Description :** Supprime définitivement un article du système. Cette action ne supprime pas l'auteur associé à l'article.
 
 #### Parameters
 
@@ -97,7 +105,9 @@ classDiagram
 
 ### cloneArticle
 
+**Résumé :** Cloner un article
 
+**Description :** Crée une copie exacte d'un article existant. Le clone aura le même contenu et le même auteur que l'article original mais un nouvel ID unique.
 
 #### Parameters
 
@@ -111,7 +121,9 @@ classDiagram
 
 ### getArticles
 
+**Résumé :** Récupérer tous les articles
 
+**Description :** Récupère la liste complète des articles disponibles dans le système. Les articles sont retournés avec leurs informations détaillées et les références à leurs auteurs.
 
 #### Responses
 

@@ -102,7 +102,8 @@ public class DocumentationService {
               .forEach(method -> {
                   Operation operation = method.getAnnotation(Operation.class);
                   content.append("### ").append(method.getName()).append("\n\n");
-                  content.append(operation.description()).append("\n\n");
+                  content.append("**Résumé :** ").append(operation.summary()).append("\n\n");
+                  content.append("**Description :** ").append(operation.description()).append("\n\n");
                   
                   // Paramètres
                   if (method.getParameterCount() > 0) {
