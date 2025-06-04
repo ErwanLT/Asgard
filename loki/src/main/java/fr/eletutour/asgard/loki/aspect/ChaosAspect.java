@@ -7,6 +7,10 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Random;
 
@@ -22,10 +26,11 @@ public class ChaosAspect {
         this.random = new Random();
     }
 
-    @Around("within(@org.springframework.web.bind.annotation.RestController *) || " +
+    @Around("(within(@org.springframework.web.bind.annotation.RestController *) || " +
             "within(@org.springframework.stereotype.Service *) || " +
             "within(@org.springframework.stereotype.Repository *) || " +
-            "within(@org.springframework.stereotype.Controller *)")
+            "within(@org.springframework.stereotype.Controller *)) && " +
+            "!within(fr.eletutour.asgard.loki..*)")
     public Object applyChaos(ProceedingJoinPoint joinPoint) throws Throwable {
         if (!lokiChaos.isEnabled()) {
             return joinPoint.proceed();
@@ -61,15 +66,15 @@ public class ChaosAspect {
     }
 
     private boolean isLayerWatched(ProceedingJoinPoint joinPoint, Hugin watcher) {
-        String targetClassName = joinPoint.getTarget().getClass().getName().toLowerCase();
+        Class<?> targetClass = joinPoint.getTarget().getClass();
         
-        if (targetClassName.contains("controller") && !targetClassName.contains("rest")) {
-            return watcher.isController();
-        } else if (targetClassName.contains("restcontroller")) {
+        if (targetClass.isAnnotationPresent(RestController.class)) {
             return watcher.isRestcontroller();
-        } else if (targetClassName.contains("service")) {
+        } else if (targetClass.isAnnotationPresent(Controller.class)) {
+            return watcher.isController();
+        } else if (targetClass.isAnnotationPresent(Service.class)) {
             return watcher.isService();
-        } else if (targetClassName.contains("repository")) {
+        } else if (targetClass.isAnnotationPresent(Repository.class)) {
             return watcher.isRepository();
         }
         
