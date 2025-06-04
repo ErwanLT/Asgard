@@ -3,8 +3,15 @@ package fr.eletutour.asgard.mimir.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.lang.reflect.Modifier.isPrivate;
+import static java.lang.reflect.Modifier.isProtected;
+import static java.lang.reflect.Modifier.isPublic;
 
 @Slf4j
 @Service
@@ -22,7 +29,7 @@ public class UmlDiagramService {
         mermaid.append("    class ").append(clazz.getSimpleName()).append(" {\n");
 
         // Ajouter les champs
-        for (java.lang.reflect.Field field : clazz.getDeclaredFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             mermaid.append("        ").append(getFieldModifier(field))
                     .append(field.getType().getSimpleName())
                     .append(" ")
@@ -31,7 +38,7 @@ public class UmlDiagramService {
         }
 
         // Ajouter les méthodes
-        for (java.lang.reflect.Method method : clazz.getDeclaredMethods()) {
+        for (Method method : clazz.getDeclaredMethods()) {
             if (!method.isSynthetic()) {
                 mermaid.append("        ").append(getMethodModifier(method))
                         .append(method.getReturnType().getSimpleName())
@@ -52,22 +59,22 @@ public class UmlDiagramService {
     }
 
     private String getFieldModifier(java.lang.reflect.Field field) {
-        if (java.lang.reflect.Modifier.isPrivate(field.getModifiers())) return "-";
-        if (java.lang.reflect.Modifier.isProtected(field.getModifiers())) return "#";
-        if (java.lang.reflect.Modifier.isPublic(field.getModifiers())) return "+";
+        if (isPrivate(field.getModifiers())) return "-";
+        if (isProtected(field.getModifiers())) return "#";
+        if (isPublic(field.getModifiers())) return "+";
         return "~";
     }
 
     private String getMethodModifier(java.lang.reflect.Method method) {
-        if (java.lang.reflect.Modifier.isPrivate(method.getModifiers())) return "-";
-        if (java.lang.reflect.Modifier.isProtected(method.getModifiers())) return "#";
-        if (java.lang.reflect.Modifier.isPublic(method.getModifiers())) return "+";
+        if (isPrivate(method.getModifiers())) return "-";
+        if (isProtected(method.getModifiers())) return "#";
+        if (isPublic(method.getModifiers())) return "+";
         return "~";
     }
 
     private String getMethodParameters(java.lang.reflect.Method method) {
         List<String> params = new ArrayList<>();
-        for (java.lang.reflect.Parameter param : method.getParameters()) {
+        for (Parameter param : method.getParameters()) {
             params.add(param.getType().getSimpleName() + " " + param.getName());
         }
         return String.join(", ", params);
@@ -92,7 +99,7 @@ public class UmlDiagramService {
         }
 
         // Associations (basées sur les types des champs)
-        for (java.lang.reflect.Field field : clazz.getDeclaredFields()) {
+        for (Field field : clazz.getDeclaredFields()) {
             Class<?> fieldType = field.getType();
             if (!fieldType.isPrimitive() && !fieldType.getName().startsWith("java.lang")) {
                 mermaid.append("    ").append(clazz.getSimpleName())
