@@ -15,6 +15,7 @@
         <module>baldr</module>
         <module>hel</module>
         <module>odin</module>
+        <module>loki</module>
     </modules>
 
     <properties>
