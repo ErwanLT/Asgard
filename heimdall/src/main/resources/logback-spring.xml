@@ -8,20 +8,9 @@
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <providers>
-                <timestamp />
-                <version />
-                <message />
-                <loggerName />
-                <threadName />
-                <logLevel />
-                <callerData /> <!-- Optional: for class and line number -->
-                <stackTrace />
-                <mdc /> <!-- To include MDC properties -->
-                <tags />
-                <logstashMarkers />
-                <arguments />
-            </providers>
+            <mdc/>
+            <includeCallerData>false</includeCallerData>
+            <!-- Default providers for timestamp, message, logger, thread, level, stacktrace etc. are active -->
         </encoder>
     </appender>
 
