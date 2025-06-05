@@ -22,13 +22,12 @@ public class ServiceLoggingAspect extends AbstractLoggingAspect {
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        // Parameters argument can be used for a brief summary in the message, or ignored if MDC 'parameters' is sufficient
-        logger.info("⚙️ [{}] Début du traitement métier: {}#{}", annotationType, className, methodName);
+        logger.info("⚙️ [{}] Début du traitement métier: {}#{} - Paramètres: {}", annotationType, className, methodName, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("🔧 [{}] Fin du traitement métier: {}#{}", annotationType, className, methodName);
+        logger.info("🔧 [{}] Fin du traitement métier: {}#{} - Résultat: {}", annotationType, className, methodName, result);
     }
 
     @Override

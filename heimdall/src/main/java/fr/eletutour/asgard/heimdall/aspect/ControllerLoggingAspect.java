@@ -22,12 +22,12 @@ public class ControllerLoggingAspect extends AbstractLoggingAspect {
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("📝 [{}] Début du rendu de vue: {}#{}", annotationType, className, methodName);
+        logger.info("📝 [{}] Début du rendu de vue: {}#{} - Paramètres: {}", annotationType, className, methodName, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("📄 [{}] Fin du rendu de vue: {}#{}", annotationType, className, methodName);
+        logger.info("📄 [{}] Fin du rendu de vue: {}#{} - Résultat: {}", annotationType, className, methodName, result);
     }
 
     @Override
