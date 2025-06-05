@@ -18,6 +18,13 @@
         <module>loki</module>
     </modules>
 
+    <scm>
+        <url>https://github.com/ErwanLT/Asgard.git</url>
+        <connection>scm:git:ssh://git@github.com/ErwanLT/Asgard.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/ErwanLT/Asgard.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
