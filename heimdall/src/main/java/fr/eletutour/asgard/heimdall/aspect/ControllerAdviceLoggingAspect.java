@@ -22,12 +22,12 @@ public class ControllerAdviceLoggingAspect extends AbstractLoggingAspect {
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("⚠️ [{}] Début du traitement d'exception: {}#{}", annotationType, className, methodName);
+        logger.info("⚠️ [{}] Début du traitement d'exception: {}#{} - Paramètres: {}", annotationType, className, methodName, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("✅ [{}] Fin du traitement d'exception: {}#{}", annotationType, className, methodName);
+        logger.info("✅ [{}] Fin du traitement d'exception: {}#{} - Résultat: {}", annotationType, className, methodName, result);
     }
 
     @Override
