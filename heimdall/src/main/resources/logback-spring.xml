@@ -1,21 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-    <springProperty scope="context" name="LOGSTASH_HOST" source="heimdall.elk.host" defaultValue="localhost"/>
-    <springProperty scope="context" name="LOGSTASH_PORT" source="heimdall.elk.port" defaultValue="5044"/>
+    <springProperty scope="context" name="LOGSTASH_HOST" source="heimdall.logging.logstash.host" defaultValue="localhost"/>
+    <springProperty scope="context" name="LOGSTASH_PORT" source="heimdall.logging.logstash.port" defaultValue="5000"/>
+    <springProperty scope="context" name="LOGSTASH_ENABLED" source="heimdall.logging.logstash.enabled" defaultValue="false"/>
 
     <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
         <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <mdc/>
-            <includeCallerData>false</includeCallerData>
-            <!-- Default providers for timestamp, message, logger, thread, level, stacktrace etc. are active -->
+            <customFields>{"app_name":"heimdall"}</customFields>
+            <includeMdc>true</includeMdc>
+            <includeContext>true</includeContext>
         </encoder>
     </appender>
 
+    <appender name="ASYNC_LOGSTASH" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="LOGSTASH"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>true</includeCallerData>
+        <neverBlock>true</neverBlock>
+    </appender>
+
     <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-        <appender-ref ref="LOGSTASH" />
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_LOGSTASH" condition='property("LOGSTASH_ENABLED").equals("true")'/>
     </root>
 </configuration>
