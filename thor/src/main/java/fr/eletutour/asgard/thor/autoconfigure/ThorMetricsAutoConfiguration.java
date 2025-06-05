@@ -20,14 +20,17 @@ import java.util.Collections;
 /**
  * Auto-configuration for Thor Metrics.
  * <p>
- * This configuration enables and configures metrics collection based on the properties
- * defined in {@link ThorProperties}.
+ * This configuration class is responsible for setting up and registering various
+ * {@link MeterBinder} instances based on the application's configuration properties
+ * defined in {@link ThorProperties}. It allows enabling or disabling different
+ * categories of metrics such as system resources, JVM performance, and database connection pools.
  * <p>
- * Endpoint metrics (e.g., HTTP request times and counts) are provided by Spring Boot Actuator's
- * WebMvcMetricsAutoConfiguration or WebFluxMetricsAutoConfiguration. Their collection is
- * enabled/disabled globally by {@code thor.metrics.collection.endpoints}.
- * Further customization of Actuator's endpoint metrics can be done using Spring Boot's
- * {@code management.metrics.web.server.request.*} properties.
+ * Endpoint metrics (e.g., HTTP request times and counts) are primarily provided by Spring Boot Actuator's
+ * own auto-configuration (e.g., WebMvcMetricsAutoConfiguration or WebFluxMetricsAutoConfiguration).
+ * Thor's {@code thor.metrics.collection.endpoints} property serves as a global switch that can influence
+ * whether these Actuator-provided metrics are effectively collected, though Actuator's own properties
+ * (like {@code management.metrics.web.server.request.autotime.enabled}) provide finer control.
+ * Thor respects the master switch {@code thor.metrics.enabled}.
  */
 @AutoConfiguration
 @EnableConfigurationProperties(ThorProperties.class)
@@ -40,10 +43,10 @@ public class ThorMetricsAutoConfiguration {
     // configure them but respects the thor.metrics.enabled master switch.
 
     /**
-     * Provides CPU metrics.
-     * Activated if {@code thor.metrics.collection.resources} is true.
+     * Provides CPU metrics (e.g., system.cpu.usage).
+     * This bean is conditional on the property {@code thor.metrics.collection.resources=true}.
      *
-     * @return MeterBinder for CPU metrics.
+     * @return A {@link MeterBinder} for CPU metrics.
      */
     @Bean
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "resources", havingValue = "true", matchIfMissing = true)
@@ -52,10 +55,10 @@ public class ThorMetricsAutoConfiguration {
     }
 
     /**
-     * Provides JVM memory metrics.
-     * Activated if {@code thor.metrics.collection.resources} is true.
+     * Provides JVM memory metrics (e.g., jvm.memory.used, jvm.memory.max, jvm.memory.committed).
+     * This bean is conditional on the property {@code thor.metrics.collection.resources=true}.
      *
-     * @return MeterBinder for JVM memory metrics.
+     * @return A {@link MeterBinder} for JVM memory metrics.
      */
     @Bean
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "resources", havingValue = "true", matchIfMissing = true)
@@ -64,10 +67,10 @@ public class ThorMetricsAutoConfiguration {
     }
 
     /**
-     * Provides JVM garbage collection metrics.
-     * Activated if {@code thor.metrics.collection.jvm} is true.
+     * Provides JVM garbage collection metrics (e.g., jvm.gc.pause, jvm.gc.memory.allocated).
+     * This bean is conditional on the property {@code thor.metrics.collection.jvm=true}.
      *
-     * @return MeterBinder for JVM GC metrics.
+     * @return A {@link MeterBinder} for JVM GC metrics.
      */
     @Bean
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "jvm", havingValue = "true", matchIfMissing = true)
@@ -76,10 +79,10 @@ public class ThorMetricsAutoConfiguration {
     }
 
     /**
-     * Provides JVM thread metrics.
-     * Activated if {@code thor.metrics.collection.jvm} is true.
+     * Provides JVM thread metrics (e.g., jvm.threads.live, jvm.threads.daemon).
+     * This bean is conditional on the property {@code thor.metrics.collection.jvm=true}.
      *
-     * @return MeterBinder for JVM thread metrics.
+     * @return A {@link MeterBinder} for JVM thread metrics.
      */
     @Bean
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "jvm", havingValue = "true", matchIfMissing = true)
@@ -88,10 +91,10 @@ public class ThorMetricsAutoConfiguration {
     }
 
     /**
-     * Provides JVM class loader metrics.
-     * Activated if {@code thor.metrics.collection.jvm} is true.
+     * Provides JVM class loader metrics (e.g., jvm.classes.loaded, jvm.classes.unloaded).
+     * This bean is conditional on the property {@code thor.metrics.collection.jvm=true}.
      *
-     * @return MeterBinder for JVM class loader metrics.
+     * @return A {@link MeterBinder} for JVM class loader metrics.
      */
     @Bean
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "jvm", havingValue = "true", matchIfMissing = true)
@@ -100,18 +103,18 @@ public class ThorMetricsAutoConfiguration {
     }
 
     /**
-     * Provides database connection pool metrics.
-     * Activated if a {@link DataSource} bean is present and
-     * {@code thor.metrics.collection.database} is true.
+     * Provides database connection pool metrics for an available {@link DataSource}.
+     * This bean is conditional on the presence of a {@link DataSource} bean in the context
+     * and the property {@code thor.metrics.collection.database=true}.
      *
-     * @param dataSource The auto-configured DataSource.
-     * @return MeterBinder for database connection pool metrics.
+     * @param dataSource The auto-configured {@link DataSource} instance.
+     * @return A {@link MeterBinder} for database connection pool metrics.
      */
     @Bean
     @ConditionalOnBean(DataSource.class)
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "database", havingValue = "true", matchIfMissing = true)
     public MeterBinder dataSourcePoolMetrics(DataSource dataSource) {
+        // Using Collections.emptyList() for tags means the metrics will be named based on the pool type by default.
         return new DataSourcePoolMetrics(dataSource, Collections.emptyList());
     }
-
 }
