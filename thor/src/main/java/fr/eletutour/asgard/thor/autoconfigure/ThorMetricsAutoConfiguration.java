@@ -1,6 +1,7 @@
 package fr.eletutour.asgard.thor.autoconfigure;
 
 import fr.eletutour.asgard.thor.config.ThorProperties;
+import org.springframework.boot.actuate.metrics.jdbc.DataSourcePoolMetrics;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -12,7 +13,6 @@ import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
-import io.micrometer.core.instrument.binder.db.DataSourcePoolMetrics;
 
 import javax.sql.DataSource;
 import java.util.Collections;
@@ -115,6 +115,11 @@ public class ThorMetricsAutoConfiguration {
     @ConditionalOnProperty(prefix = "thor.metrics.collection", name = "database", havingValue = "true", matchIfMissing = true)
     public MeterBinder dataSourcePoolMetrics(DataSource dataSource) {
         // Using Collections.emptyList() for tags means the metrics will be named based on the pool type by default.
-        return new DataSourcePoolMetrics(dataSource, Collections.emptyList());
+        return new DataSourcePoolMetrics(
+                dataSource,
+                Collections.emptyList(),
+                "datasource",
+                Collections.emptyList()
+        );
     }
 }

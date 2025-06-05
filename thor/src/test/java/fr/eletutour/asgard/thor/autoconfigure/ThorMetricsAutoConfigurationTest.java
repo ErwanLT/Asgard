@@ -1,16 +1,15 @@
 package fr.eletutour.asgard.thor.autoconfigure;
 
 import fr.eletutour.asgard.thor.config.ThorProperties;
-import io.micrometer.core.instrument.binder.db.DataSourcePoolMetrics;
 import io.micrometer.core.instrument.binder.jvm.ClassLoaderMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmGcMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmMemoryMetrics;
 import io.micrometer.core.instrument.binder.jvm.JvmThreadMetrics;
 import io.micrometer.core.instrument.binder.system.ProcessorMetrics;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.actuate.metrics.jdbc.DataSourcePoolMetrics;
 import org.springframework.boot.autoconfigure.AutoConfigurations;
 import org.springframework.boot.test.context.runner.ApplicationContextRunner;
-import org.springframework.boot.test.mock.mockito.MockBean; // For mock DataSource
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;

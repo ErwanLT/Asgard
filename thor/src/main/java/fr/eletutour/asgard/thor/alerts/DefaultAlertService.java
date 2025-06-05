@@ -100,7 +100,7 @@ public class DefaultAlertService implements AlertService {
      * @param meterRegistry The meter registry to query.
      */
     private void checkCpuUsageThreshold(MeterRegistry meterRegistry) {
-        String thresholdStr = thorProperties.getAlerts().getThresholds().getCpuUsage();
+        String thresholdStr = String.valueOf(thorProperties.getAlerts().getThresholds().getCpuUsage());
         double thresholdPercent = parsePercentFromString(thresholdStr);
         if (thresholdPercent <= 0) {
             log.debug("CPU usage threshold is invalid or disabled: {}", thresholdStr);
@@ -126,7 +126,7 @@ public class DefaultAlertService implements AlertService {
      * @param meterRegistry The meter registry to query.
      */
     private void checkMemoryUsageThreshold(MeterRegistry meterRegistry) {
-        String thresholdStr = thorProperties.getAlerts().getThresholds().getMemoryUsage();
+        String thresholdStr = String.valueOf(thorProperties.getAlerts().getThresholds().getMemoryUsage());
         double thresholdPercent = parsePercentFromString(thresholdStr);
         if (thresholdPercent <= 0) {
             log.debug("Memory usage threshold is invalid or disabled: {}", thresholdStr);
