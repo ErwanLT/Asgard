@@ -22,19 +22,16 @@ public class RestControllerLoggingAspect extends AbstractLoggingAspect {
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("🚀 [{}] Début de l'appel API - Méthode: {} - Classe: {} - Paramètres: {}", 
-            annotationType, methodName, className, parameters);
+        logger.info("🚀 [{}] Début de l'appel API: {}#{} - Paramètres: {}", annotationType, className, methodName, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("✅ [{}] Fin de l'appel API - Méthode: {} - Classe: {} - Résultat: {}", 
-            annotationType, methodName, className, result);
+        logger.info("✅ [{}] Fin de l'appel API: {}#{} - Résultat: {}", annotationType, className, methodName, result);
     }
 
     @Override
     protected void logError(String annotationType, String methodName, String className, Exception e) {
-        logger.error("❌ [{}] Erreur API - Méthode: {} - Classe: {} - Message: {}", 
-            annotationType, methodName, className, e.getMessage());
+        logger.error("❌ [{}] Erreur API: {}#{} - Erreur: {}", annotationType, className, methodName, e.getMessage());
     }
-} 
+}

@@ -22,19 +22,16 @@ public class ServiceLoggingAspect extends AbstractLoggingAspect {
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("⚙️ [{}] Début du traitement métier - Méthode: {} - Classe: {} - Paramètres: {}", 
-            annotationType, methodName, className, parameters);
+        logger.info("⚙️ [{}] Début du traitement métier: {}#{} - Paramètres: {}", annotationType, className, methodName, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("🔧 [{}] Fin du traitement métier - Méthode: {} - Classe: {} - Résultat: {}", 
-            annotationType, methodName, className, result);
+        logger.info("🔧 [{}] Fin du traitement métier: {}#{} - Résultat: {}", annotationType, className, methodName, result);
     }
 
     @Override
     protected void logError(String annotationType, String methodName, String className, Exception e) {
-        logger.error("💥 [{}] Erreur métier - Méthode: {} - Classe: {} - Message: {}", 
-            annotationType, methodName, className, e.getMessage());
+        logger.error("💥 [{}] Erreur métier: {}#{} - Erreur: {}", annotationType, className, methodName, e.getMessage());
     }
-} 
+}

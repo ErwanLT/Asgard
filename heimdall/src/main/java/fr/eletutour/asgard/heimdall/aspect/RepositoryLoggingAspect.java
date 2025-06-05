@@ -22,19 +22,16 @@ public class RepositoryLoggingAspect extends AbstractLoggingAspect{
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("🗄️ [{}] Début de l'accès aux données - Méthode: {} - Classe: {} - Paramètres: {}", 
-            annotationType, methodName, className, parameters);
+        logger.info("🗄️ [{}] Début de l'accès aux données: {}#{} - Paramètres: {}", annotationType, className, methodName, parameters);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("💾 [{}] Fin de l'accès aux données - Méthode: {} - Classe: {} - Résultat: {}", 
-            annotationType, methodName, className, result);
+        logger.info("💾 [{}] Fin de l'accès aux données: {}#{} - Résultat: {}", annotationType, className, methodName, result);
     }
 
     @Override
     protected void logError(String annotationType, String methodName, String className, Exception e) {
-        logger.error("🚫 [{}] Erreur d'accès aux données - Méthode: {} - Classe: {} - Message: {}", 
-            annotationType, methodName, className, e.getMessage());
+        logger.error("🚫 [{}] Erreur d'accès aux données: {}#{} - Erreur: {}", annotationType, className, methodName, e.getMessage());
     }
-} 
+}
