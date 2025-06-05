@@ -22,19 +22,16 @@ public class ControllerLoggingAspect extends AbstractLoggingAspect {
 
     @Override
     protected void logEntry(String annotationType, String methodName, String className, String parameters) {
-        logger.info("📝 [{}] Début du rendu de vue - Méthode: {} - Classe: {} - Paramètres: {}", 
-            annotationType, methodName, className, parameters);
+        logger.info("📝 [{}] Début du rendu de vue: {}#{}", annotationType, className, methodName);
     }
 
     @Override
     protected void logExit(String annotationType, String methodName, String className, String result) {
-        logger.info("📄 [{}] Fin du rendu de vue - Méthode: {} - Classe: {} - Vue: {}", 
-            annotationType, methodName, className, result);
+        logger.info("📄 [{}] Fin du rendu de vue: {}#{}", annotationType, className, methodName);
     }
 
     @Override
     protected void logError(String annotationType, String methodName, String className, Exception e) {
-        logger.error("⚠️ [{}] Erreur de rendu - Méthode: {} - Classe: {} - Message: {}", 
-            annotationType, methodName, className, e.getMessage());
+        logger.error("⚠️ [{}] Erreur de rendu: {}#{} - Erreur: {}", annotationType, className, methodName, e.getMessage());
     }
-} 
+}

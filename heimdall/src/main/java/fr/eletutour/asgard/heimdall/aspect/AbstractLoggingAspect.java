@@ -5,6 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -17,18 +18,34 @@ public abstract class AbstractLoggingAspect {
     protected Object logMethod(ProceedingJoinPoint joinPoint, String annotationType) throws Throwable {
         String methodName = joinPoint.getSignature().getName();
         String className = joinPoint.getTarget().getClass().getSimpleName();
-        String parameters = formatParameters(joinPoint);
-        
-        logEntry(annotationType, methodName, className, parameters);
-        
+        String parameters = formatParameters(joinPoint); // Keep this for a summarized version
+
+        MDC.put("methodName", methodName);
+        MDC.put("className", className);
+        MDC.put("annotationType", annotationType);
+        MDC.put("parameters", parameters); // Or a more structured version if preferred
+
         try {
+            logEntry(annotationType, methodName, className, parameters); // This can be simplified
             Object result = joinPoint.proceed();
             String resultString = formatResult(result);
-            logExit(annotationType, methodName, className, resultString);
+            MDC.put("result", resultString); // Add result to MDC
+            logExit(annotationType, methodName, className, resultString); // This can be simplified
             return result;
         } catch (Exception e) {
-            logError(annotationType, methodName, className, e);
+            MDC.put("exceptionClass", e.getClass().getName());
+            MDC.put("exceptionMessage", e.getMessage());
+            // Consider adding stack trace or part of it if desired, but be mindful of log size
+            logError(annotationType, methodName, className, e); // This can be simplified
             throw e;
+        } finally {
+            MDC.remove("methodName");
+            MDC.remove("className");
+            MDC.remove("annotationType");
+            MDC.remove("parameters");
+            MDC.remove("result");
+            MDC.remove("exceptionClass");
+            MDC.remove("exceptionMessage");
         }
     }
 
