@@ -22,6 +22,9 @@ Module de test d'intégration pour simuler des conditions réelles d'utilisation
 ### Hel
 Module de gestion de l'arrêt contrôlé des applications Spring Boot. [Documentation](hel/README.md)
 
+### Loki
+Module de chaos engineering qui permet d'injecter des perturbations contrôlées dans une application Spring Boot pour tester sa résilience. [Documentation](loki/README.md)
+
 ## Prérequis
 
 - Java 21
@@ -61,6 +64,12 @@ Pour utiliser un module dans votre projet, ajoutez la dépendance correspondante
     <artifactId>hel</artifactId>
     <version>1.0-SNAPSHOT</version>
 </dependency>
+
+<dependency>
+    <groupId>fr.eletutour.asgard</groupId>
+    <artifactId>loki</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
 ```
 
 ## Structure du Projet
@@ -72,6 +81,7 @@ asgard/
 ├── mimir/           # Module de documentation
 ├── baldr/           # Module de test d'intégration
 ├── hel/             # Module de gestion de l'arrêt
+├── loki/            # Module de chaos engineering
 └── pom.xml          # POM parent
 ```
 
