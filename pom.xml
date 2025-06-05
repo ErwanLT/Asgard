@@ -16,6 +16,7 @@
         <module>hel</module>
         <module>odin</module>
         <module>loki</module>
+        <module>thor</module>
     </modules>
 
     <properties>

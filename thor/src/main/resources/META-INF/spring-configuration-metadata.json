@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "thor.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enable or disable Thor module.",
+      "defaultValue": true
+    }
+  ]
+}
