@@ -1,6 +1,6 @@
 # Heimdall - Module de Logging pour Spring Boot
 <div align="center">
-  <img width="440" alt="image" src="../docs/img/heimdall.png" />
+  <img width="440" alt="image" src="../doc/img/heimdall.png" />
 </div>
 
 ## Description
