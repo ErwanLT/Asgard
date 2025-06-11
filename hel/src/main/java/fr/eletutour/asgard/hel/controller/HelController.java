@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RestController;
         ⚠️ Attention : Ces opérations sont irréversibles et doivent être utilisées avec précaution.
         """
 )
-@SecurityRequirement(name = "bearerAuth")
 @ConditionalOnProperty(name = "hel.enabled", havingValue = "true", matchIfMissing = false)
 public class HelController {
 
