@@ -46,6 +46,31 @@ Le module Heimdall est un module de logging avancé qui permet de tracer automat
 - Debugging des composants
 - Audit des opérations
 
+### [Mimir](mimir/README.md) - Module de Documentation Automatique pour Spring Boot
+
+Le module Mimir est un module de documentation automatique qui permet de générer une documentation complète de votre application Spring Boot.
+
+**Fonctionnalités principales** :
+- Génération automatique de documentation au format Markdown
+- Support des annotations `@ApiDescription` pour documenter les classes et méthodes
+- Génération de diagrammes UML avec Mermaid
+- Documentation structurée incluant :
+  - Description des classes
+  - Tags et catégories
+  - Documentation des méthodes
+  - Types de retour
+  - Exceptions
+- Validation des annotations au démarrage
+- Formatage automatique du Markdown
+- API REST pour la génération de documentation
+
+**Utilisation typique** :
+- Documentation automatique des API REST
+- Génération de documentation technique
+- Visualisation de l'architecture avec diagrammes UML
+- Documentation des services et composants
+- Maintenance de la documentation à jour
+
 ## Installation
 
 Chaque module peut être installé indépendamment. Consultez le README spécifique de chaque module pour les instructions d'installation détaillées.
