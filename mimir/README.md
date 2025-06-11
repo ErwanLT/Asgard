@@ -5,22 +5,42 @@
 
 Module de documentation automatique pour Spring Boot, inspiré par Mimir, le dieu de la sagesse et de la connaissance dans la mythologie nordique.
 
-## Fonctionnalités Actuelles
+## Fonctionnalités
 
 ### Documentation Automatique
 - Génération automatique de documentation au format Markdown
-- Support des annotations `@ApiDescription` pour documenter les classes et méthodes
+- Support des annotations OpenAPI pour documenter les classes et méthodes :
+  - `@Tag` : Documentation des classes et contrôleurs
+  - `@Operation` : Documentation des méthodes
+  - `@Parameter` : Documentation des paramètres
+  - `@ApiResponse` : Documentation des réponses
 - Génération de documentation structurée avec :
   - Description de la classe
   - Tags
-  - Catégorie
-  - Ordre des méthodes
   - Documentation des méthodes
-  - Documentation des types de retour
-  - Documentation des exceptions
+  - Documentation des paramètres
+  - Documentation des réponses
 - Validation des annotations au démarrage
 - Formatage automatique du Markdown
 - Logging des opérations
+
+### Génération de Diagrammes UML
+- Génération automatique de diagrammes de classes avec Mermaid
+- Support des relations :
+  - Héritage
+  - Implémentation d'interfaces
+  - Associations
+- Visualisation des modificateurs d'accès (public, protected, private)
+- Génération des méthodes et attributs
+- Intégration dans la documentation Markdown
+
+### API REST
+- Endpoints pour la génération de documentation :
+  - `/mimir/generate/class` : Documentation d'une classe spécifique
+  - `/mimir/generate/package` : Documentation de toutes les classes d'un package
+- Documentation OpenAPI intégrée
+- Réponses au format JSON
+- Gestion des erreurs
 
 ## Installation
 
@@ -34,66 +54,90 @@ Ajoutez la dépendance suivante à votre `pom.xml` :
 </dependency>
 ```
 
+## Configuration
+
+Le module peut être configuré via les propriétés Spring Boot :
+
+```yaml
+mimir:
+  enabled: true
+  output:
+    path: ./output
+  documentation:
+    output-dir: docs/
+    format: markdown
+    languages:
+      - java
+      - kotlin
+```
+
 ## Utilisation
 
 ### Documentation des Classes et Méthodes
 
-Utilisez l'annotation `@ApiDescription` pour documenter vos classes et méthodes :
+Utilisez les annotations OpenAPI pour documenter vos classes et méthodes :
 
 ```java
-@ApiDescription(
-    value = "Description de la classe",
-    tags = {"tag1", "tag2"},
-    category = "ma-categorie"
-)
-public class MaClasse {
+@Tag(name = "MonController", description = "Description du contrôleur")
+@RestController
+public class MonController {
     
-    @ApiDescription(
-        value = "Description de la méthode",
-        tags = {"tag1", "tag2"},
-        category = "ma-categorie",
-        order = 1,
-        returnType = "String",
-        throws_ = {
-            @ApiDescription.Throws(
-                exception = Exception.class,
-                description = "Description de l'exception"
-            )
-        }
+    @Operation(
+        summary = "Description courte de la méthode",
+        description = "Description détaillée de la méthode"
     )
-    public String maMethode() throws Exception {
-        // ...
-    }
-
-    @ApiDescription("Description du paramètre")
-    public void autreMethode(@ApiDescription("Description du paramètre") String param) {
+    @ApiResponse(
+        responseCode = "200",
+        description = "Opération réussie"
+    )
+    public ResponseEntity<String> maMethode(
+        @Parameter(description = "Description du paramètre") String param
+    ) {
         // ...
     }
 }
 ```
 
-### Structure de l'annotation @ApiDescription
+### Structure des annotations OpenAPI
 
-L'annotation `@ApiDescription` peut être utilisée sur les classes, méthodes et paramètres avec les attributs suivants :
+#### Pour les classes :
+- `@Tag` :
+  - `name` : Nom du tag
+  - `description` : Description détaillée
 
-#### Pour les classes et méthodes :
-- `value()` : Description principale
-- `tags()` : Tableau de tags pour la catégorisation
-- `category()` : Catégorie de l'élément
-- `order()` : Ordre d'affichage (par défaut : 0)
-- `returnType()` : Type de retour (uniquement pour les méthodes)
-- `throws_()` : Liste des exceptions possibles (uniquement pour les méthodes)
+#### Pour les méthodes :
+- `@Operation` :
+  - `summary` : Résumé de l'opération
+  - `description` : Description détaillée
+- `@ApiResponse` :
+  - `responseCode` : Code de réponse HTTP
+  - `description` : Description de la réponse
 
 #### Pour les paramètres :
-- `value()` : Description du paramètre
+- `@Parameter` :
+  - `description` : Description du paramètre
+
+### Utilisation de l'API REST
+
+#### Générer la documentation d'une classe
+```bash
+curl -X POST "http://localhost:8080/mimir/generate/class?className=com.example.MaClasse"
+```
+
+#### Générer la documentation d'un package
+```bash
+curl -X POST "http://localhost:8080/mimir/generate/package?packageName=com.example"
+```
 
 ## Tests
 
 Le module inclut une suite complète de tests unitaires pour vérifier :
 - La génération correcte de la documentation
-- La gestion des annotations
+- La gestion des annotations OpenAPI
 - Le formatage du contenu
+- La génération des diagrammes UML
 - Les cas d'erreur
+- Les endpoints REST
 
 ## Contribution
 
