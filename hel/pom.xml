@@ -4,7 +4,7 @@
 
     <groupId>fr.eletutour.asgard</groupId>
     <artifactId>hel</artifactId>
-    <version>1.0</version>
+    <version>1.1-SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
@@ -16,7 +16,7 @@
         <url>https://github.com/ErwanLT/Asgard.git</url>
         <connection>scm:git:ssh://git@github.com/ErwanLT/Asgard.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/ErwanLT/Asgard.git</developerConnection>
-        <tag>v1.0-hel</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <dependencyManagement>
