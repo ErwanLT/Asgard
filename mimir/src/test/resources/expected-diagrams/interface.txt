@@ -1,0 +1,6 @@
+classDiagram
+    class TestClass {
+    }
+    class TestInterface {
+    }
+    TestClass ..|> TestInterface 

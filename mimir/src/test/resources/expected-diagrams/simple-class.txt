@@ -1,0 +1,9 @@
+classDiagram
+    class TestClass {
+        -String privateField
+        #int protectedField
+        +boolean publicField
+        -void privateMethod()
+        #void protectedMethod()
+        +void publicMethod()
+    } 

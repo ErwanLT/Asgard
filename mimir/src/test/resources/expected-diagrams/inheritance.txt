@@ -1,0 +1,6 @@
+classDiagram
+    class ChildClass {
+    }
+    class ParentClass {
+    }
+    ChildClass --|> ParentClass 
