@@ -76,7 +76,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.1.1</version> <!-- Utilisez la dernière version disponible -->
                 <configuration>
-                    <tagNameFormat>v@{project.version}-{project.artifcatId}</tagNameFormat> <!-- Format du tag, optionnel -->
+                    <tagNameFormat>v@{project.version}-${project.artifactId}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules> <!-- Gère les sous-modules automatiquement -->
                 </configuration>
             </plugin>
